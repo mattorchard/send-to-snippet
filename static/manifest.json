@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Send 2 Snippet",
+  "description": "",
+  "version": "0.0.1",
+  "permissions": [
+    "contextMenus",
+    "activeTab"
+  ],
+  "optional_permissions": [
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "src/entries/serviceWorker.js",
+    "type": "module"
+  },
+  "options_page": "options.html",
+  "sandbox": {
+    "pages": [
+      "sandbox.html"
+    ]
+  }
+}
