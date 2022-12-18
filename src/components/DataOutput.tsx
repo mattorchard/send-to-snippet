@@ -27,11 +27,11 @@ export const DataOutput: FunctionComponent<{ data: unknown }> = memo(
     return (
       <div className="data-output">
         <Box justifyContent="flex-end">
-          <Button onClick={() => contentRef.current.requestFullscreen()}>
-            Full Screen
-          </Button>
           <Button onClick={() => navigator.clipboard.writeText(stringData)}>
             Copy Text
+          </Button>
+          <Button onClick={() => contentRef.current.requestFullscreen()}>
+            Full Screen
           </Button>
         </Box>
         <div className="data-output__content" ref={contentRef}>

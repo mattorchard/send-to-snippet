@@ -21,8 +21,8 @@ export const useScriptingPermissions = () => {
 
   return {
     requestAccess,
-    hasAccess: true,
-    isLoading: false,
-    initiallyHadAccess: false,
+    hasAccess,
+    isLoading,
+    initiallyHadAccess,
   };
 };

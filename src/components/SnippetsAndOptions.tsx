@@ -1,16 +1,19 @@
-import { FunctionComponent, h, JSX } from "preact";
-
+import { FunctionComponent, h } from "preact";
 import { Box } from "../components/Box";
 import { PermissionAlert } from "../components/PermissionAlert";
 import { useSentContextData } from "../hooks/useSentContextData";
-import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import { MonacoWrapper } from "./MonacoWrapper";
 import { sampleText } from "../helpers/sampleData";
-import { SnippetTable } from "./SnippetTable";
-
 import { SnippetOutput } from "./SnippetOutput";
 import { createId } from "../helpers/idHelpers";
 import { Button } from "./Button";
+import { ContextMenuInfo } from "../types/Domain";
+import { useSnippetRepo } from "../hooks/useSnippetRepo";
+import { Panel } from "./Panel";
+import { EditSnippetModal } from "./EditSnippetModal";
+import { useSelectedEntity } from "../hooks/useSelectedEntity";
+import { SnippetList } from "./SnippetList";
 
 interface RunState {
   runId: string;
@@ -22,30 +25,27 @@ export const SnippetsAndOptions: FunctionComponent<{
   title: string;
   mockInput: boolean;
 }> = ({ title, mockInput }) => {
-  const [inputText, setInputText] = useState("");
-  const [runState, setRunState] = useState<RunState | null>(null);
+  const { snippets, upsertSnippet, createSnippet, deleteSnippet } =
+    useSnippetRepo();
   const contextState = useSentContextData();
-
-  const rerun = useCallback(
-    () =>
-      setRunState((runState) => runState && { ...runState, runId: createId() }),
-    []
+  const [editingSnippet, setEditingSnippetId] = useSelectedEntity(snippets);
+  const [runningSnippet, setRunningSnippetId] = useSelectedEntity(snippets);
+  const [runState, setRunState] = useState<RunState | null>(null);
+  const { rawInputText, inputText, setInputText } = useInputText(
+    mockInput,
+    contextState.result
   );
 
-  const rawInputText = useMemo(() => {
-    if (mockInput) return sampleText;
-    const res = contextState.result;
-    if (!res) return "";
-    return (
-      res.manualSelectionText || res.selectionText || res.linkUrl || "No input"
-    );
-  }, [mockInput, contextState.result]);
-
   useEffect(() => {
-    setInputText(rawInputText);
-  }, [rawInputText]);
+    if (!runningSnippet) return;
+    setRunState({
+      script: runningSnippet.script,
+      runId: createId(),
+      inputText, // Grab the new input text
+    });
+  }, [runningSnippet]);
 
-  const shouldShowEditor = mockInput || !contextState.isLoading;
+  const shouldShowInput = mockInput || !contextState.isLoading;
 
   return (
     <div className="snippets-and-options">
@@ -56,11 +56,9 @@ export const SnippetsAndOptions: FunctionComponent<{
       </Box>
       <div className="content-grid">
         <Panel title="Input">
-          {shouldShowEditor ? (
+          {shouldShowInput ? (
             <div className="input-text-editor">
-              <Box mb={1}>
-                <PermissionAlert />
-              </Box>
+              <PermissionAlert />
               <MonacoWrapper
                 language={null}
                 initialValue={rawInputText}
@@ -72,19 +70,47 @@ export const SnippetsAndOptions: FunctionComponent<{
           )}
         </Panel>
 
-        <Panel title="Snippet" action={<Button>+ Add Snippet</Button>}>
+        <Panel
+          title="Snippet"
+          action={<Button onClick={createSnippet}>+ Add Snippet</Button>}
+        >
           <div>
-            <SnippetTable
-              onRunSnippet={(script) =>
-                setRunState({ inputText, script, runId: createId() })
-              }
-            />
+            {snippets && (
+              <SnippetList
+                snippets={snippets}
+                onDelete={deleteSnippet}
+                onEdit={setEditingSnippetId}
+                onRun={setRunningSnippetId}
+              />
+            )}
           </div>
+          {editingSnippet && (
+            <EditSnippetModal
+              snippet={editingSnippet}
+              onClose={() => setEditingSnippetId(null)}
+              onSave={upsertSnippet}
+            />
+          )}
         </Panel>
 
         <Panel
           title="Output"
-          action={runState && <Button onClick={rerun}>Rerun</Button>}
+          action={
+            runState && (
+              <Button
+                onClick={() => {
+                  if (runningSnippet)
+                    setRunState({
+                      script: runningSnippet.script,
+                      runId: createId(),
+                      inputText,
+                    });
+                }}
+              >
+                Rerun
+              </Button>
+            )
+          }
         >
           {runState ? (
             <SnippetOutput
@@ -101,17 +127,26 @@ export const SnippetsAndOptions: FunctionComponent<{
   );
 };
 
-const Panel: FunctionComponent<{
-  title: string;
-  action?: JSX.Element | null;
-}> = ({ title, action, children }) => (
-  <section className="panel">
-    <Box as="header" mb={0.5}>
-      <Box as="h2" className="h2" mr="auto">
-        {title}
-      </Box>
-      {action}
-    </Box>
-    {children}
-  </section>
-);
+const useInputText = (
+  mockInput: boolean,
+  contextInfo: ContextMenuInfo | null
+) => {
+  const [inputText, setInputText] = useState("");
+
+  const rawInputText = useMemo(() => {
+    if (mockInput) return sampleText;
+    if (!contextInfo) return "";
+    return (
+      contextInfo.manualSelectionText ||
+      contextInfo.selectionText ||
+      contextInfo.linkUrl ||
+      "No input"
+    );
+  }, [mockInput, contextInfo]);
+
+  useEffect(() => {
+    setInputText(rawInputText);
+  }, [rawInputText]);
+
+  return { inputText, setInputText, rawInputText };
+};

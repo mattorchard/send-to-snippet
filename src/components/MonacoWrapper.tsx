@@ -25,7 +25,6 @@ export const MonacoWrapper = memo(
     const containerRef = useRef<HTMLDivElement>(undefined!);
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
     useLayoutEffect(() => {
-      console.debug("Initializing editor with value", { initialValue });
       const editor = monaco.editor.create(containerRef.current, {
         value: initialValue,
         language: language ?? undefined,

@@ -18,6 +18,10 @@
   --card-border: 1px solid var(--color-gray-light);
   --color-scrollbar: rgba(121, 121, 121, 0.4);
 }
+:fullscreen::backdrop {
+  /* Duplicated to abvoid undefined */
+  background-color: #1e1e1e;
+}
 * {
   box-sizing: border-box;
   margin: 0;
@@ -47,17 +51,6 @@ button:enabled {
   cursor: pointer;
 }
 
-.interactive {
-  transition: filter 0.2s ease-in-out;
-}
-
-.interactive:hover:not(:disabled) {
-  filter: brightness(1.1);
-}
-
-.interactive:active:not(:disabled) {
-  filter: brightness(0.9);
-}
 ul,
 ol {
   list-style: none;
@@ -89,24 +82,26 @@ textarea {
   resize: none;
 }
 
-.snippet-options-modal {
+.edit-snippet-modal {
   background-color: var(--color-background);
   margin: auto;
   flex-direction: column;
   width: 50rem;
 }
-.snippet-options-modal__form {
+
+.edit-snippet-modal__form {
   display: grid;
   grid-template-rows: 2.5rem 1fr;
   height: 50rem;
 }
-
-dialog::backdrop {
-  background-color: rgba(0, 0, 0, 0.36);
-  backdrop-filter: blur(2px);
+.edit-snippet-modal {
+  border: var(--card-border);
+}
+.edit-snippet-modal__header {
+  background-color: var(--color-gray-mid);
 }
 
-.button {
+.btn {
   border: 1px solid currentColor;
   color: var(--color-blue-mid);
   padding: 0.5rem;
@@ -115,16 +110,12 @@ dialog::backdrop {
   align-items: center;
 }
 
-.button--warning {
+.btn--warning {
   color: var(--color-orange);
 }
 
-a.button {
+a.btn {
   text-decoration: none;
-}
-
-.snippet-options-modal__header {
-  background-color: var(--color-gray-mid);
 }
 
 .alert {
@@ -144,10 +135,6 @@ a.button {
   border-color: var(--color-blue-mid);
 }
 
-.snippet-options-modal {
-  border: var(--card-border);
-}
-
 .subtle-text {
   color: var(--color-text-light-subtle);
   transition: color 0.2s ease-in-out;
@@ -158,7 +145,7 @@ a.button {
   color: var(--color-text-light);
 }
 
-.button + .button {
+.btn + .btn {
   margin-left: 0.125rem;
 }
 
@@ -169,6 +156,10 @@ a.button {
 .monaco-wrapper {
   height: 100%;
   max-height: 200vh;
+}
+
+.monaco-wrapper * {
+  line-height: unset;
 }
 
 .sr-only {
@@ -283,6 +274,7 @@ summary {
 .panel {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
+  grid-template-columns: 100%;
   overflow: hidden;
 }
 
@@ -290,6 +282,24 @@ summary {
   padding: 0.5rem;
 }
 
-:fullscreen::backdrop {
-  background-color: var(--color-background);
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(2px);
+}
+
+.ellipses {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.snippet-list__item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.snippet-list__item__title-container {
+  flex-grow: 2;
+  min-width: 0;
 }
