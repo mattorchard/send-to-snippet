@@ -12,10 +12,11 @@
   --color-blue-light: #aeb8fe;
   --color-white: #f1f2f6;
   --color-orange: #ff8600;
-  --color-red: #ff2200;
+  --color-red: crimson;
   --color-darken: rgba(20, 20, 20, 0.4);
   --color-text-light-subtle: rgba(241, 242, 246, 0.4);
   --card-border: 1px solid var(--color-gray-light);
+  --color-scrollbar: rgba(121, 121, 121, 0.4);
 }
 * {
   box-sizing: border-box;
@@ -75,11 +76,6 @@ ol {
   font-size: 1.25rem;
 }
 
-.snippets-and-options {
-  max-width: 50rem;
-  margin: 0 auto;
-}
-
 .subtle-input,
 .subtle-textarea {
   font: inherit;
@@ -101,9 +97,11 @@ textarea {
 }
 .snippet-options-modal__form {
   display: grid;
-  grid-template-rows: 2.5rem auto;
+  grid-template-rows: 2.5rem 1fr;
+  height: 50rem;
 }
-::backdrop {
+
+dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.36);
   backdrop-filter: blur(2px);
 }
@@ -138,6 +136,9 @@ a.button {
 .alert.alert--warning {
   border-color: var(--color-orange);
 }
+.alert.alert--error {
+  border-color: var(--color-red);
+}
 
 .alert.alert--success {
   border-color: var(--color-blue-mid);
@@ -145,15 +146,6 @@ a.button {
 
 .snippet-options-modal {
   border: var(--card-border);
-}
-
-.snippet-card {
-  border: var(--card-border);
-}
-
-.snippet-card__header {
-  background-color: var(--color-gray-mid);
-  height: 2.5rem;
 }
 
 .subtle-text {
@@ -170,30 +162,134 @@ a.button {
   margin-left: 0.125rem;
 }
 
-.output-type-select {
-  background: none;
-}
-.output-type-select > option {
-  color: var(--color-text-dark);
-}
-
-.snippet-runner {
-  border: var(--card-border);
-  border-top: none;
-}
-
-.sandbox-iframe {
-  min-height: 25rem;
-  width: 100%;
-  border: 1px solid var(--color-orange);
-  background-color: var(--color-background);
-}
-
 .input-text-editor {
   border: var(--card-border);
 }
 
-.text-output pre {
-  overflow-x: auto;
-  padding: 1px;
+.monaco-wrapper {
+  height: 100%;
+  max-height: 200vh;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.snippet-row {
+  position: relative;
+}
+
+.overlapper {
+  display: grid;
+}
+.overlapper__option {
+  visibility: hidden;
+  grid-row: 1;
+  grid-column: 1;
+}
+.overlapper__option--active {
+  visibility: unset;
+}
+
+.snippets-and-options {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  max-height: 100vh;
+  min-height: 100vh;
+  padding: 0.5rem;
+  overflow: hidden;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+@media only screen and (max-width: 1200px) {
+  .content-grid {
+    grid-template-columns: unset;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
+  .snippets-and-options {
+    max-height: unset;
+  }
+}
+
+.snippet-table {
+  border-collapse: collapse;
+}
+
+.snippet-row {
+  height: 2.5rem;
+}
+
+.snippet-row:nth-child(even) {
+  background-color: var(--color-gray-mid);
+}
+
+.snippet-row > td:last-child {
+  width: 0;
+}
+
+.snippet-row--active {
+  color: var(--color-blue-light);
+}
+
+.snippet-row:hover,
+.snippet-row:focus,
+.snippet-row:focus-within {
+  background-color: var(--color-gray-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar);
+}
+
+p,
+pre,
+code {
+  user-select: all;
+}
+
+summary {
+  cursor: pointer;
+}
+
+.snippet-output {
+  max-height: 100%;
+  border: var(--card-border);
+  overflow-y: auto;
+  padding: 0 0.5rem;
+}
+
+.snippet-output__iframe {
+  width: 100%;
+  height: 75vh;
+  border: var(--card-border);
+}
+
+.data-output__content {
+  height: 75vh;
+}
+
+.panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+}
+
+:fullscreen {
+  padding: 0.5rem;
+}
+
+:fullscreen::backdrop {
+  background-color: var(--color-background);
 }

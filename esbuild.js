@@ -11,6 +11,7 @@ const buildOptions = {
     "./src/entries/options.tsx",
     "./src/entries/sandbox.ts",
     "node_modules/monaco-editor/esm/vs/language/typescript/ts.worker.js",
+    "node_modules/monaco-editor/esm/vs/language/json/json.worker.js",
     "node_modules/monaco-editor/esm/vs/editor/editor.worker.js",
   ],
   bundle: true,

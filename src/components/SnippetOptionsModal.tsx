@@ -11,7 +11,6 @@ import { Snippet, Upsertable } from "../types/Domain";
 import { Box } from "./Box";
 import { Button } from "./Button";
 import { MonacoWrapper } from "./MonacoWrapper";
-import { OutputTypeSelect } from "./OutputTypeSelect";
 
 export const SnippetOptionsModal: FunctionComponent<{
   snippet: Snippet;
@@ -19,18 +18,13 @@ export const SnippetOptionsModal: FunctionComponent<{
   onClose: () => void;
 }> = ({ snippet, onClose, onSave }) => {
   const [draftScript, setDraftScript] = useState(snippet.script);
-  const [draftOutputType, setDraftOutputType] = useState(snippet.outputType);
   const ref = useRef<HTMLDialogElement>(undefined!);
 
   useLayoutEffect(() => {
     ref.current.showModal();
   }, []);
 
-  const hasUnsavedChanges = useMemo(
-    () =>
-      snippet.outputType !== draftOutputType || snippet.script !== draftScript,
-    [snippet.outputType, draftOutputType, snippet.script, draftScript]
-  );
+  const hasUnsavedChanges = snippet.script !== draftScript;
 
   const confirmCancel = useCallback(() => {
     if (!hasUnsavedChanges) return true;
@@ -70,7 +64,6 @@ export const SnippetOptionsModal: FunctionComponent<{
             onSave({
               ...snippet,
               script: draftScript,
-              outputType: draftOutputType,
             })
           }
           onReset={() => {
@@ -82,10 +75,6 @@ export const SnippetOptionsModal: FunctionComponent<{
               {snippet.title}
             </Box>
             <Box ml="auto">
-              <OutputTypeSelect
-                value={draftOutputType}
-                onChange={setDraftOutputType}
-              />
               <Button type="submit">Save changes</Button>
               <Button type="reset" intent="warning">
                 Cancel
@@ -95,8 +84,7 @@ export const SnippetOptionsModal: FunctionComponent<{
           <MonacoWrapper
             initialValue={snippet.script}
             onChange={setDraftScript}
-            language="javascript"
-            rows={47.5}
+            language="typescript"
           />
         </form>
       </dialog>

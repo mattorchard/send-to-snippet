@@ -1,7 +1,7 @@
-import { Fragment, FunctionComponent, h, JSX } from "preact";
+import { Fragment, FunctionComponent, h } from "preact";
 import { useState } from "preact/hooks";
 import { useScriptingPermissions } from "../hooks/useScriptingPermissions";
-import { Box } from "./Box";
+import { Alert } from "./Alert";
 import { Button } from "./Button";
 
 export const PermissionAlert: FunctionComponent = () => {
@@ -47,21 +47,3 @@ export const PermissionAlert: FunctionComponent = () => {
     />
   );
 };
-
-const Alert: FunctionComponent<{
-  intent: "success" | "warning";
-  title: string;
-  body: JSX.Element;
-  action: JSX.Element;
-}> = ({ intent, title, body, action }) => (
-  <Box
-    className={`alert alert--${intent}`}
-    flexDirection="column"
-    gap={0.25}
-    pl={1}
-  >
-    <h4 className="h4">{title}</h4>
-    <div>{body}</div>
-    <div>{action}</div>
-  </Box>
-);
