@@ -10,7 +10,11 @@ export const Button: FunctionComponent<ButtonProps> = ({
   type = "button",
   ...props
 }) => (
-  <button {...props} type={type} className={`btn btn--${intent} ${className}`}>
+  <button
+    {...props}
+    type={type}
+    className={`btn btn--${intent} interactive ${className}`}
+  >
     {props.children}
   </button>
 );

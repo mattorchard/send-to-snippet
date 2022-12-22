@@ -13,14 +13,21 @@ export const SnippetList: FunctionComponent<{
 }> = ({ snippets, onRun, onEdit, onDelete }) => (
   <ol className="snippet-list">
     {snippets.map((snippet) => (
-      <li key={snippet.id} className="snippet-list__item">
+      <li
+        key={snippet.id}
+        className="snippet-list__item interactive"
+        onClick={() => onRun(snippet.id)}
+      >
         <div className="snippet-list__item__title-container">
           <h3 className="h4 ellipses" title={snippet.title}>
             {snippet.title}
           </h3>
         </div>
 
-        <Box>
+        <Box
+          className="snippet-list__item__actions"
+          onClick={(e: Event) => e.stopPropagation()}
+        >
           <Button onClick={() => onRun(snippet.id)}>Run</Button>
           <Button onClick={() => onEdit(snippet.id)}>Edit</Button>
           <Button intent="warning" onClick={() => onDelete(snippet.id)}>
