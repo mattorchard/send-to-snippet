@@ -135,7 +135,7 @@ const useInputText = (
 
   const rawInputText = useMemo(() => {
     if (mockInput) return sampleText;
-    if (!contextInfo) return "";
+    if (!contextInfo) return "No input";
     return (
       contextInfo.manualSelectionText ||
       contextInfo.selectionText ||

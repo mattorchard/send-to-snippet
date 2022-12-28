@@ -20,7 +20,9 @@ export const SnippetList: FunctionComponent<{
       >
         <div className="snippet-list__item__title-container">
           <h3 className="h4 ellipses" title={snippet.title}>
-            {snippet.title}
+            {snippet.title.trim() || (
+              <em className="italics">Untitled snippet</em>
+            )}
           </h3>
         </div>
 
