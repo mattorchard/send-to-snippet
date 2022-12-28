@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
+import { sampleSnippetSkeleton } from "../helpers/sampleData";
 import { snippetRepository } from "../helpers/SnippetRepository";
 import { Snippet, Upsertable } from "../types/Domain";
 
@@ -30,10 +31,7 @@ export const useSnippetRepo = () => {
   const createSnippet = useCallback(
     () =>
       upsertSnippet({
-        title: "",
-        description: "",
-        script: "",
-        outputType: "text",
+        ...sampleSnippetSkeleton,
       }),
     [upsertSnippet]
   );

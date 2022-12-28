@@ -45,3 +45,10 @@ export const sampleSnippets: Upsertable<Snippet>[] = [
     script: "window.alert(input)",
   },
 ];
+
+export const sampleSnippetSkeleton: Upsertable<Snippet> = {
+  title: "New Snippet",
+  description: "Base new snippet",
+  script: `return input.toUpperCase()`,
+  outputType: "document",
+};
