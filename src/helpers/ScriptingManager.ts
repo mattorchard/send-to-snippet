@@ -1,4 +1,4 @@
-import { extension } from "./Extension";
+import { extension, ScriptTarget } from "./Extension";
 
 const scriptingPermissions = ["scripting"];
 
@@ -8,6 +8,6 @@ export const ScriptingManager = {
 
   hasAccess: () => extension.hasAccess({ permissions: scriptingPermissions }),
 
-  executeScript: async <T>(tabId: number, func: () => T) =>
-    extension.executeScript(tabId, func),
+  executeScript: async <T>(target: ScriptTarget, func: () => T) =>
+    extension.executeScript(target, func),
 };

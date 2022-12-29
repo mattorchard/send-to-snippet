@@ -1,6 +1,13 @@
 import { wrapError } from "./errorHelpers";
 
+export interface ScriptTarget {
+  tabId: number;
+  frameId: number | null;
+}
+
 class ChromeWrapper {
+  private static readonly ROOT_FRAME_ID = 0;
+
   getUrl(path: string): string {
     return chrome.runtime.getURL(path);
   }
@@ -27,11 +34,14 @@ class ChromeWrapper {
     );
   }
 
-  // Todo: Add Frame ID
-  async executeScript<T>(tabId: number, func: () => T): Promise<T | null> {
+  async executeScript<T>(
+    target: ScriptTarget,
+    func: () => T
+  ): Promise<T | null> {
     const allResults = await chrome.scripting.executeScript<[], T>({
       target: {
-        tabId,
+        tabId: target.tabId,
+        frameIds: [target.frameId ?? ChromeWrapper.ROOT_FRAME_ID],
       },
       func,
     });
@@ -65,9 +75,9 @@ class LocalhostExtension implements Extension {
     return true;
   }
 
-  async executeScript<T>(tabId: number, func: () => T) {
+  async executeScript<T>(target: ScriptTarget, func: () => T) {
     console.debug("Local requested to run script", {
-      tabId,
+      target,
       func,
     });
     return null;

@@ -37,15 +37,19 @@ chrome.contextMenus.onClicked.addListener(
 
     let manualSelectionText = null;
     if (sourceTab?.id && (await ScriptingManager.hasAccess())) {
-      manualSelectionText = await ScriptingManager.executeScript(
-        sourceTab.id,
-        getSelectedText
-      );
+      try {
+        manualSelectionText = await ScriptingManager.executeScript(
+          { tabId: sourceTab.id, frameId: baseContextMenuInfo.frameId ?? null },
+          getSelectedText
+        );
+      } catch (error) {
+        console.warn("Unable to grab multiline input", error);
+      }
     }
 
     const contextMenuInfo = { ...baseContextMenuInfo, manualSelectionText };
 
-    mailboxRepository.upsertDrop({
+    await mailboxRepository.upsertDrop({
       contextMenuInfo,
       sourceTabId: sourceTab?.id ?? null,
       targetTabId: snippetsTab.id!,
