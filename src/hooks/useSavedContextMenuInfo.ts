@@ -1,12 +1,12 @@
 import { useEffect, useState } from "preact/hooks";
 import { wrapError } from "../helpers/errorHelpers";
-import { extension } from "../helpers/Extension";
 import { mailboxRepository } from "../helpers/MailboxRepository";
+import { getQueryParam } from "../helpers/UrlHelpers";
 import { ContextMenuInfo } from "../types/Domain";
 import { PromiseState } from "../types/UtilityTypes";
 
 const getDropForTab = async () => {
-  const tabId = await extension.getCurrentTabId();
+  const tabId = getQueryParam("targetId");
   if (!tabId) return null;
   return await mailboxRepository.getDropForTab(tabId);
 };

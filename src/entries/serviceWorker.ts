@@ -1,3 +1,5 @@
+import { createId } from "../helpers/idHelpers";
+import { LinkHrefs } from "../helpers/LinkHrefs";
 import { mailboxRepository } from "../helpers/MailboxRepository";
 import { ScriptingManager } from "../helpers/ScriptingManager";
 
@@ -28,13 +30,6 @@ chrome.contextMenus.onClicked.addListener(
   async (baseContextMenuInfo, sourceTab) => {
     console.log("Context menu clicked", { baseContextMenuInfo, sourceTab });
 
-    const snippetsTab = await chrome.tabs.create({
-      url: chrome.runtime.getURL("snippets.html"),
-    });
-    const { id: snippetsTabId } = snippetsTab;
-    if (!snippetsTabId)
-      throw new Error(`Created tab for snippets page has no ID`);
-
     let manualSelectionText = null;
     if (sourceTab?.id && (await ScriptingManager.hasAccess())) {
       try {
@@ -47,12 +42,16 @@ chrome.contextMenus.onClicked.addListener(
       }
     }
 
+    const targetId = createId();
     const contextMenuInfo = { ...baseContextMenuInfo, manualSelectionText };
 
     await mailboxRepository.upsertDrop({
       contextMenuInfo,
       sourceTabId: sourceTab?.id ?? null,
-      targetTabId: snippetsTab.id!,
+      targetId,
+    });
+    await chrome.tabs.create({
+      url: LinkHrefs.snippetTarget(targetId),
     });
   }
 );

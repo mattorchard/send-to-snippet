@@ -9,7 +9,7 @@ const Mdb = {
     drops: "drops",
   },
   indexes: {
-    targetTabId: "targetTabId",
+    targetId: "targetId",
     createdAt: "createdAt",
     updatedAt: "updatedAt",
   },
@@ -20,7 +20,7 @@ interface MailboxDb extends DBSchema {
     value: MailboxDrop;
     key: string;
     indexes: {
-      [Mdb.indexes.targetTabId]: MailboxDrop["targetTabId"];
+      [Mdb.indexes.targetId]: MailboxDrop["targetId"];
       [Mdb.indexes.createdAt]: MailboxDrop["createdAt"];
       [Mdb.indexes.updatedAt]: MailboxDrop["updatedAt"];
     };
@@ -37,7 +37,7 @@ class MailboxRepository {
         const dropStore = db.createObjectStore(Mdb.stores.drops, {
           keyPath: "id",
         });
-        dropStore.createIndex(Mdb.indexes.targetTabId, "targetTabId", {
+        dropStore.createIndex(Mdb.indexes.targetId, "targetId", {
           unique: true,
         });
         dropStore.createIndex(Mdb.indexes.createdAt, "createdAt");
@@ -46,20 +46,20 @@ class MailboxRepository {
     });
   }
 
-  async getDropForTab(targetTabId: number) {
+  async getDropForTab(targetId: MailboxDrop["targetId"]) {
     const db = await this.dbPromise;
     return (
       (await db.getFromIndex(
         Mdb.stores.drops,
-        Mdb.indexes.targetTabId,
-        targetTabId
+        Mdb.indexes.targetId,
+        targetId
       )) ?? null
     );
   }
 
   async upsertDrop(partialDrop: Upsertable<MailboxDrop>): Promise<MailboxDrop> {
     const db = await this.dbPromise;
-    const prevDropForTab = await this.getDropForTab(partialDrop.targetTabId);
+    const prevDropForTab = await this.getDropForTab(partialDrop.targetId);
 
     const completeDrop: MailboxDrop = {
       id: createId(),

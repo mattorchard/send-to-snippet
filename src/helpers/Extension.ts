@@ -49,11 +49,6 @@ class ChromeWrapper {
     const result = allResults?.[0]?.result as T;
     return result ?? null;
   }
-
-  async getCurrentTabId() {
-    const tab = await chrome.tabs.getCurrent();
-    return tab?.id ?? null;
-  }
 }
 
 type Extension = typeof ChromeWrapper["prototype"];
@@ -80,10 +75,6 @@ class LocalhostExtension implements Extension {
       target,
       func,
     });
-    return null;
-  }
-
-  async getCurrentTabId() {
     return null;
   }
 }

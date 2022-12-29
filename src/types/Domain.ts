@@ -5,7 +5,7 @@ export type ContextMenuInfo = chrome.contextMenus.OnClickData & {
 export interface MailboxDrop extends Entity {
   contextMenuInfo: ContextMenuInfo;
   sourceTabId: number | null;
-  targetTabId: number;
+  targetId: string;
 }
 
 export interface Entity {
