@@ -53,7 +53,8 @@ class SnippetRepository {
   async insertSampleSnippets() {
     console.debug("Inserting sameple snippets");
     const outputSnips: Snippet[] = [];
-    for (const snip of sampleSnippets) {
+    const reversedSampleSnippets = [...sampleSnippets].reverse();
+    for (const snip of reversedSampleSnippets) {
       outputSnips.push(await this.upsertSnippet(snip));
     }
     return outputSnips.reverse();
