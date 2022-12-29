@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import { wrapError } from "./errorHelpers";
 
 export interface ScriptTarget {
@@ -5,81 +6,63 @@ export interface ScriptTarget {
   frameId: number | null;
 }
 
-class ChromeWrapper {
-  private static readonly ROOT_FRAME_ID = 0;
+const CHROME_ROOT_FRAME_ID = 0;
 
-  getUrl(path: string): string {
-    return chrome.runtime.getURL(path);
-  }
+const wrapChromeError =
+  <T>(resolve: (value: T) => void, reject: (error: Error) => void) =>
+  (value: T) =>
+    chrome.runtime.lastError
+      ? reject(wrapError(chrome.runtime.lastError))
+      : resolve(value);
 
-  askUserToGrantPermissions(
-    permissions: chrome.permissions.Permissions
-  ): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) =>
-      chrome.permissions.request(permissions, (granted) =>
-        chrome.runtime.lastError
-          ? reject(wrapError(chrome.runtime.lastError))
-          : resolve(granted)
-      )
-    );
-  }
+const ChromeWrapper = {
+  getUrl: (path: string): string => chrome.runtime.getURL(path),
 
-  hasAccess(permissions: chrome.permissions.Permissions): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) =>
-      chrome.permissions.contains(permissions, (granted) =>
-        chrome.runtime.lastError
-          ? reject(wrapError(chrome.runtime.lastError))
-          : resolve(granted)
-      )
-    );
-  }
+  askUserToGrantPermissions: (permissions: chrome.permissions.Permissions) =>
+    new Promise<boolean>((resolve, reject) =>
+      chrome.permissions.request(permissions, wrapChromeError(resolve, reject))
+    ),
 
-  async executeScript<T>(
+  hasAccess: (permissions: chrome.permissions.Permissions) =>
+    new Promise<boolean>((resolve, reject) =>
+      chrome.permissions.contains(permissions, wrapChromeError(resolve, reject))
+    ),
+
+  executeScript: async <T>(
     target: ScriptTarget,
     func: () => T
-  ): Promise<T | null> {
+  ): Promise<T | null> => {
     const allResults = await chrome.scripting.executeScript<[], T>({
       target: {
         tabId: target.tabId,
-        frameIds: [target.frameId ?? ChromeWrapper.ROOT_FRAME_ID],
+        frameIds: [target.frameId ?? CHROME_ROOT_FRAME_ID],
       },
       func,
     });
     // Todo: Ensure cast is safe
     const result = allResults?.[0]?.result as T;
     return result ?? null;
-  }
-}
+  },
+} as const;
 
-type Extension = typeof ChromeWrapper["prototype"];
+// Chrome implementation is primary, so drives mocks and other implementations
+type Extension = typeof ChromeWrapper;
 
-class LocalhostExtension implements Extension {
-  constructor() {
-    console.debug("Created LocalhostExtension");
-  }
+const LocalhostExtension: Extension = {
+  getUrl: (path: string) => `/${path}`,
 
-  getUrl(path: string) {
-    return `/${path}`;
-  }
+  askUserToGrantPermissions: async () => true,
 
-  async askUserToGrantPermissions() {
-    return true;
-  }
+  hasAccess: async () => true,
 
-  async hasAccess() {
-    return true;
-  }
-
-  async executeScript<T>(target: ScriptTarget, func: () => T) {
+  executeScript: async <T>(target: ScriptTarget, func: () => T) => {
     console.debug("Local requested to run script", {
       target,
       func,
     });
     return null;
-  }
-}
+  },
+};
 
 const shouldMock = self.location.host.startsWith("localhost");
-export const extension = shouldMock
-  ? new LocalhostExtension()
-  : new ChromeWrapper();
+export const extension = shouldMock ? LocalhostExtension : ChromeWrapper;

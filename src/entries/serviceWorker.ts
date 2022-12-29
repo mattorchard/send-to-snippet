@@ -22,50 +22,50 @@ chrome.contextMenus.create(
       : console.log("S2S created context menu")
 );
 
-function getSelectedText() {
-  return window.getSelection()?.toString() ?? "";
-}
+// function getSelectedText() {
+//   return window.getSelection()?.toString() ?? "";
+// }
 
-const getManualSelectionText = async (
-  tabId: number | null,
-  frameId: number | null
-) => {
-  if (!tabId) return null;
+// const getManualSelectionText = async (
+//   tabId: number | null,
+//   frameId: number | null
+// ) => {
+//   if (!tabId) return null;
 
-  const hasScriptAccess = await ScriptingManager.hasAccess();
-  if (!hasScriptAccess) return null;
+//   const hasScriptAccess = await ScriptingManager.hasAccess();
+//   if (!hasScriptAccess) return null;
 
-  try {
-    return await ScriptingManager.executeScript(
-      { tabId, frameId },
-      getSelectedText
-    );
-  } catch (error) {
-    console.warn("Unable to grab multiline input", error);
-    return null;
-  }
-};
+//   try {
+//     return await ScriptingManager.executeScript(
+//       { tabId, frameId },
+//       getSelectedText
+//     );
+//   } catch (error) {
+//     console.warn("Unable to grab multiline input", error);
+//     return null;
+//   }
+// };
 
-chrome.contextMenus.onClicked.addListener(
-  async (baseContextMenuInfo, sourceTab) => {
-    console.log("Context menu clicked", { baseContextMenuInfo, sourceTab });
+// chrome.contextMenus.onClicked.addListener(
+//   async (baseContextMenuInfo, sourceTab) => {
+//     console.log("Context menu clicked", { baseContextMenuInfo, sourceTab });
 
-    const targetId = createId();
-    await mailboxRepository.upsertDrop({
-      targetId,
-      sourceTabId: sourceTab?.id ?? null,
-      contextMenuInfo: {
-        ...baseContextMenuInfo,
-        manualSelectionText: await getManualSelectionText(
-          sourceTab?.id ?? null,
-          baseContextMenuInfo.frameId ?? null
-        ),
-      },
-    });
-    await chrome.tabs.create({
-      url: LinkHrefs.snippetTarget(targetId),
-    });
-  }
-);
+//     const targetId = createId();
+//     await mailboxRepository.upsertDrop({
+//       targetId,
+//       sourceTabId: sourceTab?.id ?? null,
+//       contextMenuInfo: {
+//         ...baseContextMenuInfo,
+//         manualSelectionText: await getManualSelectionText(
+//           sourceTab?.id ?? null,
+//           baseContextMenuInfo.frameId ?? null
+//         ),
+//       },
+//     });
+//     await chrome.tabs.create({
+//       url: LinkHrefs.snippetTarget(targetId),
+//     });
+//   }
+// );
 
 export default {};
