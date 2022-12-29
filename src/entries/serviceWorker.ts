@@ -1,5 +1,4 @@
 import { extension } from "../helpers/Extension";
-import { createId } from "../helpers/idHelpers";
 import { LinkHrefs } from "../helpers/LinkHrefs";
 import { mailboxRepository } from "../helpers/MailboxRepository";
 import { getManualSelectionText } from "../helpers/selectionHelper";
@@ -15,9 +14,7 @@ extension
 extension.addOnContextMenuClicked(async (baseContextMenuInfo, sourceTab) => {
   console.log("Context menu clicked", { baseContextMenuInfo, sourceTab });
 
-  const targetId = createId();
-  await mailboxRepository.upsertDrop({
-    targetId,
+  const createdDrop = await mailboxRepository.upsertDrop({
     sourceTabId: sourceTab?.id ?? null,
     contextMenuInfo: {
       ...baseContextMenuInfo,
@@ -27,7 +24,7 @@ extension.addOnContextMenuClicked(async (baseContextMenuInfo, sourceTab) => {
       ),
     },
   });
-  await extension.createTab(LinkHrefs.snippetTarget(targetId));
+  await extension.createTab(LinkHrefs.snippetTarget(createdDrop.id));
 });
 
 export default {};

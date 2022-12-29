@@ -4,8 +4,8 @@ import { buildUrl } from "./UrlHelpers";
 export const LinkHrefs = {
   sandbox: extension.getUrl("sandbox.html"),
   options: extension.getUrl("options.html"),
-  snippetTarget: (targetId: string) =>
+  snippetTarget: (dropId: string) =>
     buildUrl(extension.getUrl("snippets.html"), {
-      search: { targetId },
+      search: { dropId },
     }).toString(),
 };

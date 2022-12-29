@@ -1,3 +1,3 @@
 export type QueryParams = {
-  targetId: string;
+  dropId: string;
 };

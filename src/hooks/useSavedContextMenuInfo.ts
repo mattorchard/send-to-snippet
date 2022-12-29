@@ -6,9 +6,9 @@ import { ContextMenuInfo } from "../types/Domain";
 import { PromiseState } from "../types/UtilityTypes";
 
 const getDropForTab = async () => {
-  const tabId = getQueryParam("targetId");
+  const tabId = getQueryParam("dropId");
   if (!tabId) return null;
-  return await mailboxRepository.getDropForTab(tabId);
+  return await mailboxRepository.getDrop(tabId);
 };
 
 type CmiPromiseState = PromiseState<ContextMenuInfo | null, "contextMenuInfo">;

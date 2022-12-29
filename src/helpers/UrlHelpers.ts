@@ -8,7 +8,7 @@ export const getQueryParam = (key: keyof QueryParams): string | null => {
 
 type UrlParts = {
   hash?: string;
-  search?: string | Record<string, string | number>;
+  search?: string | Record<keyof QueryParams, string | number>;
 };
 
 export const buildUrl = (

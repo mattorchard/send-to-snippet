@@ -9,7 +9,6 @@ const Mdb = {
     drops: "drops",
   },
   indexes: {
-    targetId: "targetId",
     createdAt: "createdAt",
     updatedAt: "updatedAt",
   },
@@ -20,7 +19,6 @@ interface MailboxDb extends DBSchema {
     value: MailboxDrop;
     key: string;
     indexes: {
-      [Mdb.indexes.targetId]: MailboxDrop["targetId"];
       [Mdb.indexes.createdAt]: MailboxDrop["createdAt"];
       [Mdb.indexes.updatedAt]: MailboxDrop["updatedAt"];
     };
@@ -37,29 +35,19 @@ class MailboxRepository {
         const dropStore = db.createObjectStore(Mdb.stores.drops, {
           keyPath: "id",
         });
-        dropStore.createIndex(Mdb.indexes.targetId, "targetId", {
-          unique: true,
-        });
         dropStore.createIndex(Mdb.indexes.createdAt, "createdAt");
         dropStore.createIndex(Mdb.indexes.updatedAt, "updatedAt");
       },
     });
   }
 
-  async getDropForTab(targetId: MailboxDrop["targetId"]) {
+  async getDrop(id: string) {
     const db = await this.dbPromise;
-    return (
-      (await db.getFromIndex(
-        Mdb.stores.drops,
-        Mdb.indexes.targetId,
-        targetId
-      )) ?? null
-    );
+    return (await db.get(Mdb.stores.drops, id)) ?? null;
   }
 
   async upsertDrop(partialDrop: Upsertable<MailboxDrop>): Promise<MailboxDrop> {
     const db = await this.dbPromise;
-    const prevDropForTab = await this.getDropForTab(partialDrop.targetId);
 
     const completeDrop: MailboxDrop = {
       id: createId(),
@@ -68,13 +56,7 @@ class MailboxRepository {
       updatedAt: new Date(),
     };
     console.debug("Upserting mailbox drop", completeDrop);
-
-    const transaction = db.transaction(Mdb.stores.drops, "readwrite");
-
-    transaction.store.put(completeDrop);
-    if (prevDropForTab) transaction.store.delete(prevDropForTab.id);
-
-    await transaction.done;
+    db.put(Mdb.stores.drops, completeDrop);
     this.pruneBufferInBackground();
     return completeDrop;
   }
@@ -93,8 +75,10 @@ class MailboxRepository {
     const db = await this.dbPromise;
     const currentCount = await db.count(Mdb.stores.drops);
     if (currentCount <= MailboxRepository.DROP_COUNT) return;
+
     const countToDelete = currentCount - MailboxRepository.DROP_COUNT;
     const dropsToDelete = await this.getOldestDrops(countToDelete);
+
     console.debug("Pruning drop buffer", { countToDelete, dropsToDelete });
     // Intentionally performed in isolation, rather than transactionally
     await Promise.all(dropsToDelete.map((drop) => this.deleteDrop(drop.id)));
