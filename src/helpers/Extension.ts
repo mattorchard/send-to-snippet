@@ -28,6 +28,30 @@ const ChromeWrapper = {
       chrome.permissions.contains(permissions, wrapChromeError(resolve, reject))
     ),
 
+  removeAllContextMenus: async () =>
+    new Promise<void>((resolve, reject) =>
+      chrome.contextMenus.removeAll(wrapChromeError(resolve, reject))
+    ),
+
+  createContextMenu: async (menu: chrome.contextMenus.CreateProperties) =>
+    new Promise<void>((resolve, reject) =>
+      chrome.contextMenus.create(menu, wrapChromeError(resolve, reject))
+    ),
+
+  setAllContextMenus: async (menus: chrome.contextMenus.CreateProperties[]) => {
+    await ChromeWrapper.removeAllContextMenus();
+    for (const menu of menus) {
+      await ChromeWrapper.createContextMenu(menu);
+    }
+  },
+
+  addOnContextMenuClicked: (
+    handler: (
+      info: chrome.contextMenus.OnClickData,
+      tab: chrome.tabs.Tab | undefined
+    ) => void
+  ) => chrome.contextMenus.onClicked.addListener(handler),
+
   executeScript: async <T>(
     target: ScriptTarget,
     func: () => T
@@ -42,6 +66,10 @@ const ChromeWrapper = {
     // Todo: Ensure cast is safe
     const result = allResults?.[0]?.result as T;
     return result ?? null;
+  },
+
+  createTab: async (url: string) => {
+    chrome.tabs.create({ url });
   },
 } as const;
 
@@ -61,6 +89,22 @@ const LocalhostExtension: Extension = {
       func,
     });
     return null;
+  },
+
+  removeAllContextMenus: async () =>
+    console.debug("Local requested to remove context menus"),
+
+  createContextMenu: async (menu) =>
+    console.debug("Local requested to remove add context menu", menu),
+
+  setAllContextMenus: async (menus) =>
+    console.debug("Local requested to remove set context menu", menus),
+
+  addOnContextMenuClicked: () =>
+    console.debug("Local requested to add context menu on click handler"),
+
+  createTab: async (url) => {
+    self.open(url, "_blank");
   },
 };
 
