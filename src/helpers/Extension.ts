@@ -49,6 +49,10 @@ class ChromeWrapper {
 type Extension = typeof ChromeWrapper["prototype"];
 
 class LocalhostExtension implements Extension {
+  constructor() {
+    console.debug("Created LocalhostExtension");
+  }
+
   getUrl(path: string) {
     return `/${path}`;
   }
@@ -74,7 +78,7 @@ class LocalhostExtension implements Extension {
   }
 }
 
-const shouldMock = window.location.host.startsWith("localhost");
+const shouldMock = self.location.host.startsWith("localhost");
 export const extension = shouldMock
   ? new LocalhostExtension()
   : new ChromeWrapper();
