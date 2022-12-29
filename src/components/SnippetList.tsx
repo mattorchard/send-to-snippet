@@ -21,7 +21,7 @@ export const SnippetList: FunctionComponent<{
         <div className="snippet-list__item__title-container">
           <h3 className="h4 ellipses" title={snippet.title}>
             {snippet.title.trim() || (
-              <em className="italics">Untitled snippet</em>
+              <em className="italics">{FALLBACK_TITLE}</em>
             )}
           </h3>
         </div>
@@ -32,7 +32,19 @@ export const SnippetList: FunctionComponent<{
         >
           <Button onClick={() => onRun(snippet.id)}>Run</Button>
           <Button onClick={() => onEdit(snippet.id)}>Edit</Button>
-          <Button intent="warning" onClick={() => onDelete(snippet.id)}>
+          <Button
+            intent="warning"
+            onClick={() => {
+              if (
+                window.confirm(
+                  `Are you sure you want to delete "${
+                    snippet.title.trim() || FALLBACK_TITLE
+                  }"?`
+                )
+              )
+                onDelete(snippet.id);
+            }}
+          >
             Delete
           </Button>
         </Box>
@@ -40,3 +52,5 @@ export const SnippetList: FunctionComponent<{
     ))}
   </ol>
 );
+
+const FALLBACK_TITLE = "Untitled snippet";
