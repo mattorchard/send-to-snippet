@@ -61,7 +61,7 @@ class SnippetRepository {
 
   async upsertSnippet(snippet: Upsertable<Snippet>): Promise<Snippet> {
     const db = await this.dbPromise;
-    const completeSnippet = {
+    const completeSnippet: Snippet = {
       id: createId(),
       createdAt: new Date(),
       ...snippet,

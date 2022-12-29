@@ -1,7 +1,7 @@
 import { FunctionComponent, h } from "preact";
 import { Box } from "../components/Box";
 import { PermissionAlert } from "../components/PermissionAlert";
-import { useSentContextData } from "../hooks/useSentContextData";
+import { useSavedContextMenuInfo } from "../hooks/useSavedContextMenuInfo";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { MonacoWrapper } from "./MonacoWrapper";
 import { sampleText } from "../helpers/sampleData";
@@ -27,13 +27,13 @@ export const SnippetsAndOptions: FunctionComponent<{
 }> = ({ title, mockInput }) => {
   const { snippets, upsertSnippet, createSnippet, deleteSnippet } =
     useSnippetRepo();
-  const contextState = useSentContextData();
+  const contextState = useSavedContextMenuInfo();
   const [editingSnippet, setEditingSnippetId] = useSelectedEntity(snippets);
   const [runningSnippet, setRunningSnippetId] = useSelectedEntity(snippets);
   const [runState, setRunState] = useState<RunState | null>(null);
   const { rawInputText, inputText, setInputText } = useInputText(
     mockInput,
-    contextState.result
+    contextState.contextMenuInfo
   );
 
   useEffect(() => {

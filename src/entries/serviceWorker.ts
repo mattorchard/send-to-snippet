@@ -1,5 +1,5 @@
+import { mailboxRepository } from "../helpers/MailboxRepository";
 import { ScriptingManager } from "../helpers/ScriptingManager";
-import { ContextMenuInfo } from "../types/Domain";
 
 console.log("Hello from S2S Service worker", new Date().toTimeString());
 
@@ -19,16 +19,13 @@ chrome.contextMenus.create(
       : console.log("S2S created context menu")
 );
 
-const mailbox = new Map<number, ContextMenuInfo>();
-const MAX_MAILBOX_SIZE = 1_000;
-
 function getSelectedText() {
   return window.getSelection()?.toString() ?? "";
 }
 
 chrome.contextMenus.onClicked.addListener(
-  async (contextMenuInfo, sourceTab) => {
-    console.log("Context menu clicked", { contextMenuInfo, sourceTab });
+  async (baseContextMenuInfo, sourceTab) => {
+    console.log("Context menu clicked", { baseContextMenuInfo, sourceTab });
 
     const snippetsTab = await chrome.tabs.create({
       url: chrome.runtime.getURL("snippets.html"),
@@ -45,22 +42,14 @@ chrome.contextMenus.onClicked.addListener(
       );
     }
 
-    mailbox.set(snippetsTabId, { ...contextMenuInfo, manualSelectionText });
+    const contextMenuInfo = { ...baseContextMenuInfo, manualSelectionText };
+
+    mailboxRepository.upsertDrop({
+      contextMenuInfo,
+      sourceTabId: sourceTab?.id ?? null,
+      targetTabId: snippetsTab.id!,
+    });
   }
 );
-
-chrome.runtime.onMessage.addListener((message, sender, sendReply) => {
-  console.debug("Service worker received message", {
-    message,
-    sender,
-  });
-  const senderTabId = sender.tab?.id as number;
-  const payload = mailbox.get(senderTabId);
-  if (!payload) throw new Error(`No messages pending for tab ${senderTabId}`);
-
-  console.log(`Found message pending for tab ${senderTabId}`);
-  sendReply(payload);
-  if (mailbox.size > MAX_MAILBOX_SIZE) mailbox.delete(senderTabId);
-});
 
 export default {};

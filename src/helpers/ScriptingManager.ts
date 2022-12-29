@@ -13,9 +13,11 @@ export const ScriptingManager = {
 
   hasAccess: () =>
     new Promise<boolean>((resolve) =>
-      chrome.permissions.contains({ permissions }, (granted) =>
-        resolve(granted)
-      )
+      chrome?.permissions
+        ? chrome.permissions.contains({ permissions }, (granted) =>
+            resolve(granted)
+          )
+        : resolve(true)
     ),
 
   executeScript: async <T>(tabId: number, func: () => T) => {
