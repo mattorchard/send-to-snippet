@@ -86,7 +86,7 @@ textarea {
   background-color: var(--color-background);
   transition: background-color var(--transition);
 }
-.interactive:focus {
+.interactive:focus-visible {
   background-color: rgba(121, 121, 121, 0.6);
 }
 .interactive:hover {
