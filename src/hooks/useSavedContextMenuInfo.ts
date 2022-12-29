@@ -1,14 +1,14 @@
 import { useEffect, useState } from "preact/hooks";
 import { wrapError } from "../helpers/errorHelpers";
+import { extension } from "../helpers/Extension";
 import { mailboxRepository } from "../helpers/MailboxRepository";
 import { ContextMenuInfo } from "../types/Domain";
 import { PromiseState } from "../types/UtilityTypes";
 
-const getDrop = async () => {
-  if (!chrome?.tabs) return null;
-  const tab = await chrome.tabs.getCurrent();
-  if (!tab || !tab.id) return null;
-  return await mailboxRepository.getDropForTab(tab.id);
+const getDropForTab = async () => {
+  const tabId = await extension.getCurrentTabId();
+  if (!tabId) return null;
+  return await mailboxRepository.getDropForTab(tabId);
 };
 
 type CmiPromiseState = PromiseState<ContextMenuInfo | null, "contextMenuInfo">;
@@ -18,7 +18,7 @@ let promiseState: CmiPromiseState = {
   error: null,
   contextMenuInfo: null,
 };
-const getMenuInfoPromise = getDrop().then(
+const getMenuInfoPromise = getDropForTab().then(
   (drop) =>
     (promiseState = {
       isLoading: false,

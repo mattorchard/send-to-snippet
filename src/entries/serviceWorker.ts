@@ -3,6 +3,7 @@ import { ScriptingManager } from "../helpers/ScriptingManager";
 
 console.log("Hello from S2S Service worker", new Date().toTimeString());
 
+// Todo: Move all context menu management out of entrypoint
 chrome.contextMenus.removeAll();
 chrome.contextMenus.create(
   {

@@ -1,32 +1,14 @@
-const permissions = ["scripting"];
+import { extension } from "./Extension";
+
+const scriptingPermissions = ["scripting"];
 
 export const ScriptingManager = {
   askUserToGrantAccess: () =>
-    new Promise<boolean>((resolve) =>
-      chrome.permissions.request(
-        {
-          permissions,
-        },
-        (granted) => resolve(granted)
-      )
-    ),
+    extension.askUserToGrantPermissions({ permissions: scriptingPermissions }),
 
   hasAccess: () =>
-    new Promise<boolean>((resolve) =>
-      chrome?.permissions
-        ? chrome.permissions.contains({ permissions }, (granted) =>
-            resolve(granted)
-          )
-        : resolve(true)
-    ),
+    extension.askUserToGrantPermissions({ permissions: scriptingPermissions }),
 
-  executeScript: async <T>(tabId: number, func: () => T) => {
-    const allResults = await chrome.scripting.executeScript({
-      target: {
-        tabId,
-      },
-      func,
-    });
-    return allResults?.[0]?.result ?? null;
-  },
+  executeScript: async <T>(tabId: number, func: () => T) =>
+    extension.executeScript(tabId, func),
 };

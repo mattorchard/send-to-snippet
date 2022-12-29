@@ -1,10 +1,7 @@
-const shouldMock = window.location.host.startsWith("localhost");
-
-const relUrl = (fileName: string) =>
-  shouldMock ? `/${fileName}` : chrome.runtime.getURL(fileName);
+import { extension } from "./Extension";
 
 export const LinkHrefs = {
-  sandbox: relUrl("sandbox.html"),
-  snippets: relUrl("snippets.html"),
-  options: relUrl("options.html"),
+  sandbox: extension.getUrl("sandbox.html"),
+  snippets: extension.getUrl("snippets.html"),
+  options: extension.getUrl("options.html"),
 };
