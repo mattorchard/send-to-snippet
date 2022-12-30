@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "preact/hooks";
+import { Logger } from "../helpers/Logger";
 import { FromSandboxMessage } from "../types/Protocol";
 import { useWindowEvent } from "./useWindowEvent";
 
@@ -18,6 +19,8 @@ const initialReplyState: SandboxReplyState = {
   hasResolved: false,
 };
 
+const logger = new Logger("useSandboxReply");
+
 export const useSandboxReply = () => {
   const ref = useRef<HTMLIFrameElement>(undefined!);
   const [state, setState] = useState(initialReplyState);
@@ -27,7 +30,7 @@ export const useSandboxReply = () => {
     useCallback((event: MessageEvent<FromSandboxMessage>) => {
       if (event.source !== ref.current.contentWindow) return;
       const { data } = event;
-      console.debug("Main thread received reply", data);
+      logger.debug("Main thread received reply", data);
       switch (data.kind) {
         case "dom-mutation":
           setState((state) => ({ ...state, hasMutated: true }));
@@ -46,6 +49,8 @@ export const useSandboxReply = () => {
             error: data.error,
           }));
           break;
+        default:
+          logger.warn("Received unexpected message kind", data);
       }
     }, [])
   );

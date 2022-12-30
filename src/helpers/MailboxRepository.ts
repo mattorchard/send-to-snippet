@@ -2,6 +2,7 @@ import { DBSchema, IDBPDatabase, openDB } from "idb";
 import { MailboxDrop, Snippet, Upsertable } from "../types/Domain";
 import { config } from "./config";
 import { createId } from "./idHelpers";
+import { Logger } from "./Logger";
 
 const Mdb = {
   dbName: "DBNAME_mailbox",
@@ -24,6 +25,8 @@ interface MailboxDb extends DBSchema {
     };
   };
 }
+
+const logger = new Logger("MailboxRepository");
 class MailboxRepository {
   private static readonly DROP_COUNT = config.MAX_MAILBOX_DROPS;
   private static readonly PRUNE_DELAY = config.MAILBOX_PRUNE_DELAY;
@@ -55,7 +58,7 @@ class MailboxRepository {
       ...partialDrop,
       updatedAt: new Date(),
     };
-    console.debug("Upserting mailbox drop", completeDrop);
+    logger.debug("Upserting mailbox drop", completeDrop);
     db.put(Mdb.stores.drops, completeDrop);
     this.pruneBufferInBackground();
     return completeDrop;
@@ -66,7 +69,7 @@ class MailboxRepository {
       try {
         await this.pruneBuffer();
       } catch (error) {
-        console.warn("Failed to prune mailbox drops", error);
+        logger.warn("Failed to prune mailbox drops", error);
       }
     }, MailboxRepository.PRUNE_DELAY);
   }
@@ -79,7 +82,7 @@ class MailboxRepository {
     const countToDelete = currentCount - MailboxRepository.DROP_COUNT;
     const dropsToDelete = await this.getOldestDrops(countToDelete);
 
-    console.debug("Pruning drop buffer", { countToDelete, dropsToDelete });
+    logger.debug("Pruning drop buffer", { countToDelete, dropsToDelete });
     // Intentionally performed in isolation, rather than transactionally
     await Promise.all(dropsToDelete.map((drop) => this.deleteDrop(drop.id)));
   }

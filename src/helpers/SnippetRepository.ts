@@ -1,6 +1,7 @@
 import { DBSchema, IDBPDatabase, openDB } from "idb";
 import { Snippet, Upsertable } from "../types/Domain";
 import { createId } from "./idHelpers";
+import { Logger } from "./Logger";
 import { sampleSnippets } from "./sampleData";
 
 const Sdb = {
@@ -25,6 +26,7 @@ interface SnippetDb extends DBSchema {
   };
 }
 
+const logger = new Logger("SnippetRepository");
 class SnippetRepository {
   dbPromise: Promise<IDBPDatabase<SnippetDb>>;
   constructor() {
@@ -46,12 +48,13 @@ class SnippetRepository {
       Sdb.indexes.createdAt
     );
     snippets.reverse();
+    logger.debug("Got all snippets", { count: snippets.length });
     if (snippets.length) return snippets;
     return await this.insertSampleSnippets();
   }
 
   async insertSampleSnippets() {
-    console.debug("Inserting sameple snippets");
+    logger.debug("Inserting sameple snippets");
     const outputSnips: Snippet[] = [];
     const reversedSampleSnippets = [...sampleSnippets].reverse();
     for (const snip of reversedSampleSnippets) {
@@ -68,7 +71,7 @@ class SnippetRepository {
       ...snippet,
       updatedAt: new Date(),
     };
-    console.debug("Upserting snippet", completeSnippet);
+    logger.debug("Upserting snippet", completeSnippet);
     await db.put(Sdb.stores.snippets, completeSnippet);
     return completeSnippet;
   }

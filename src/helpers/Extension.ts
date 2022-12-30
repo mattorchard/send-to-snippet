@@ -1,5 +1,6 @@
 import { resolve } from "path";
 import { wrapError } from "./errorHelpers";
+import { Logger } from "./Logger";
 
 export interface ScriptTarget {
   tabId: number;
@@ -76,6 +77,7 @@ const ChromeWrapper = {
 // Chrome implementation is primary, so drives mocks and other implementations
 type Extension = typeof ChromeWrapper;
 
+const lgLogger = new Logger("LocalhostExtension");
 const LocalhostExtension: Extension = {
   getUrl: (path: string) => `/${path}`,
 
@@ -84,7 +86,7 @@ const LocalhostExtension: Extension = {
   hasAccess: async () => true,
 
   executeScript: async <T>(target: ScriptTarget, func: () => T) => {
-    console.debug("Local requested to run script", {
+    lgLogger.debug("Local requested to run script", {
       target,
       func,
     });
@@ -92,16 +94,16 @@ const LocalhostExtension: Extension = {
   },
 
   removeAllContextMenus: async () =>
-    console.debug("Local requested to remove context menus"),
+    lgLogger.debug("removeAllContextMenus stub"),
 
   createContextMenu: async (menu) =>
-    console.debug("Local requested to remove add context menu", menu),
+    lgLogger.debug("createContextMenu stub", menu),
 
   setAllContextMenus: async (menus) =>
-    console.debug("Local requested to remove set context menu", menus),
+    lgLogger.debug("setAllContextMenus stub", menus),
 
-  addOnContextMenuClicked: () =>
-    console.debug("Local requested to add context menu on click handler"),
+  addOnContextMenuClicked: (handler) =>
+    lgLogger.debug("addOnContextMenuClicked stub", handler),
 
   createTab: async (url) => {
     self.open(url, "_blank");

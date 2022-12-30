@@ -1,4 +1,7 @@
+import { Logger } from "./Logger";
 import { ScriptingManager } from "./ScriptingManager";
+
+const logger = new Logger("ManualSelectionText");
 
 export const getManualSelectionText = async (
   tabId: number | null,
@@ -15,7 +18,7 @@ export const getManualSelectionText = async (
       getSelectedText
     );
   } catch (error) {
-    console.warn("Unable to grab multiline input", error);
+    logger.warn("Unable to get multiline input", error);
     return null;
   }
 };
