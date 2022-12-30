@@ -1,4 +1,5 @@
 import { h, FunctionComponent, Fragment, JSX } from "preact";
+import { bem } from "../helpers/StyleHelper";
 
 export const Overlapper: FunctionComponent<{
   active: string;
@@ -8,9 +9,7 @@ export const Overlapper: FunctionComponent<{
     {Object.entries(options).map(([key, value]) => (
       <span
         key={key}
-        className={`overlapper__option ${
-          key === active && "overlapper__option--active"
-        }`}
+        className={bem("overlapper__option", { active: key === active })}
       >
         {value}
       </span>

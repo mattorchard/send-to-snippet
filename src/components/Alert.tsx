@@ -1,4 +1,5 @@
 import { FunctionComponent, h, JSX } from "preact";
+import { bem } from "../helpers/StyleHelper";
 import { Box } from "./Box";
 
 export const Alert: FunctionComponent<{
@@ -8,7 +9,7 @@ export const Alert: FunctionComponent<{
   action?: JSX.Element;
 }> = ({ intent, title, body, action }) => (
   <Box
-    className={`alert alert--${intent}`}
+    className={bem("alert", [intent])}
     flexDirection="column"
     gap={0.25}
     pl={1}
