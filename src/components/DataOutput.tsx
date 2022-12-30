@@ -4,6 +4,7 @@ import { memo } from "preact/compat";
 import { Button } from "./Button";
 import { MonacoWrapper } from "./MonacoWrapper";
 import { Box } from "./Box";
+import { toRichJsonString } from "../helpers/JsonHelpers";
 
 export const DataOutput: FunctionComponent<{ data: unknown }> = memo(
   ({ data }) => {
@@ -19,7 +20,7 @@ export const DataOutput: FunctionComponent<{ data: unknown }> = memo(
     const stringData = useMemo(() => {
       if (isString) return data;
       if (hasToString) return data.toString();
-      return JSON.stringify(data, null, 2);
+      return toRichJsonString(data);
     }, [isString, hasToString, data]);
 
     const language = isString || hasToString ? null : "json";

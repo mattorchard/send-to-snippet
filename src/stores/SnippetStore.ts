@@ -14,7 +14,7 @@ type SnippetStorePromiseState = PromiseState<Snippet[] | null, "snippets">;
 type SnippetObserver = (state: SnippetStorePromiseState) => void;
 
 class SnippetStore {
-  private observable = new Observable<SnippetStorePromiseState>({
+  private readonly observable = new Observable<SnippetStorePromiseState>({
     error: null,
     isLoading: true,
     snippets: null,

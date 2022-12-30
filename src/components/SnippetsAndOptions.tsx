@@ -80,6 +80,7 @@ export const SnippetsAndOptions: FunctionComponent<{
                 snippets={snippets}
                 onDelete={deleteSnippet}
                 onEdit={setEditingSnippetId}
+                // Todo: Allow rerunning
                 onRun={setRunningSnippetId}
               />
             )}
