@@ -19,7 +19,7 @@ const initialReplyState: SandboxReplyState = {
   hasResolved: false,
 };
 
-const logger = new Logger("useSandboxReply");
+const logger = new Logger("SandboxReply");
 
 export const useSandboxReply = () => {
   const ref = useRef<HTMLIFrameElement>(undefined!);

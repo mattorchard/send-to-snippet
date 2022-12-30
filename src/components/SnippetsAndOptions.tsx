@@ -9,7 +9,7 @@ import { SnippetOutput } from "./SnippetOutput";
 import { createId } from "../helpers/idHelpers";
 import { Button } from "./Button";
 import { ContextMenuInfo } from "../types/Domain";
-import { useSnippetRepo } from "../hooks/useSnippetRepo";
+import { useSnippetStore } from "../hooks/useSnippetStore";
 import { Panel } from "./Panel";
 import { EditSnippetModal } from "./EditSnippetModal";
 import { useSelectedEntity } from "../hooks/useSelectedEntity";
@@ -26,7 +26,7 @@ export const SnippetsAndOptions: FunctionComponent<{
   mockInput: boolean;
 }> = ({ title, mockInput }) => {
   const { snippets, upsertSnippet, createSnippet, deleteSnippet } =
-    useSnippetRepo();
+    useSnippetStore();
   const contextState = useSavedContextMenuInfo();
   const [editingSnippet, setEditingSnippetId] = useSelectedEntity(snippets);
   const [runningSnippet, setRunningSnippetId] = useSelectedEntity(snippets);

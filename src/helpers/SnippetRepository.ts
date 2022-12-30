@@ -28,7 +28,7 @@ interface SnippetDb extends DBSchema {
 
 const logger = new Logger("SnippetRepository");
 class SnippetRepository {
-  dbPromise: Promise<IDBPDatabase<SnippetDb>>;
+  private readonly dbPromise: Promise<IDBPDatabase<SnippetDb>>;
   constructor() {
     this.dbPromise = openDB<SnippetDb>(Sdb.dbName, 1, {
       upgrade(db) {

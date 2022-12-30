@@ -14,3 +14,16 @@ const extractMessage = (error: unknown): string | null => {
 
   return null;
 };
+
+export class AggregateErrorBuilder {
+  private readonly errors = new Array<Error>();
+
+  public push(error: unknown) {
+    this.errors.push(wrapError(error));
+  }
+
+  public check(message?: string) {
+    if (this.errors.length === 0) return;
+    throw new AggregateError(this.errors, message);
+  }
+}
