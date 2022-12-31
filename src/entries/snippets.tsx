@@ -1,9 +1,6 @@
 import { render, h } from "preact";
 import "preact/devtools";
-import "../styles/Base.css";
-import { SnippetsAndOptions } from "../components/SnippetsAndOptions";
+import { Main } from "../components/Main";
 
-const Snippets = () => (
-  <SnippetsAndOptions title="Send 2 Snippets" mockInput={false} />
-);
+const Snippets = () => <Main />;
 render(<Snippets />, document.getElementById("root")!);

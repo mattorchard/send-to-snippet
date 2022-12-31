@@ -1,0 +1,52 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  line-height: 1;
+}
+html,
+body {
+  font-size: 16px;
+  background-color: var(--color-background);
+  color: var(--color-text-light);
+  user-select: none;
+  line-height: 1;
+  font-family: sans-serif;
+}
+button {
+  background: none;
+  border: none;
+}
+select:enabled,
+button:enabled,
+summary {
+  cursor: pointer;
+}
+ul,
+ol {
+  list-style: none;
+}
+p,
+pre,
+code {
+  user-select: all;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(2px);
+}
+dialog {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+input {
+  background: none;
+  width: 100%;
+  min-width: 2rem;
+}

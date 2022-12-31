@@ -18,6 +18,7 @@ export const DataOutput: FunctionComponent<{ data: unknown }> = memo(
       );
 
     const stringData = useMemo(() => {
+      if (data === undefined) return "null";
       if (isString) return data;
       if (hasToString) return data.toString();
       return toRichJsonString(data);
@@ -30,9 +31,6 @@ export const DataOutput: FunctionComponent<{ data: unknown }> = memo(
         <Box justifyContent="flex-end">
           <Button onClick={() => navigator.clipboard.writeText(stringData)}>
             Copy Text
-          </Button>
-          <Button onClick={() => contentRef.current.requestFullscreen()}>
-            Full Screen
           </Button>
         </Box>
         <div className="data-output__content" ref={contentRef}>

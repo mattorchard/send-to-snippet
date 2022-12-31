@@ -1,8 +1,7 @@
 import { render, h } from "preact";
 import "preact/devtools";
-import { SnippetsAndOptions } from "../components/SnippetsAndOptions";
-import "../styles/Base.css";
+import { Main } from "../components/Main";
 
-const Options = () => <SnippetsAndOptions title="S2S — Options" mockInput />;
+const Options = () => <Main />;
 
 render(<Options />, document.getElementById("root")!);

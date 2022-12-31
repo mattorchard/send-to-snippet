@@ -33,14 +33,21 @@ export const RelativeDateTime: FunctionComponent<{ date?: Date }> = ({
 const SEC = 1_000;
 const MIN = 60 * SEC;
 const HOUR = 60 * MIN;
+const DAY = 24 * HOUR;
+
+const timeUnits = [
+  [DAY, "d"],
+  [HOUR, "h"],
+  [MIN, "m"],
+  [SEC, "s"],
+] as const;
 
 const formatRelativeTime = (delta: number) => {
-  if (delta < 10_000) return "a few seconds";
-  const h = Math.floor(delta / HOUR);
-  const m = Math.floor((delta % HOUR) / MIN);
-  const s = Math.floor((delta % MIN) / SEC);
-  const chunks = [`${s}s`];
-  if (m || h) chunks.unshift(`${m}m`);
-  if (h) chunks.unshift(`${h}h`);
-  return chunks.join("");
+  for (const [interval, unit] of timeUnits) {
+    if (delta > 2 * interval) {
+      const count = Math.floor(delta / interval);
+      return `${count}${unit}`;
+    }
+  }
+  return `1s`;
 };

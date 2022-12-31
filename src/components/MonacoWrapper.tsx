@@ -12,6 +12,7 @@ interface MonacoWrapperProps {
   onInput?: (value: string) => void;
   onChange?: (value: string) => void;
   isReadOnly?: boolean;
+  autoFocus?: boolean;
 }
 
 export const MonacoWrapper = memo(
@@ -21,6 +22,7 @@ export const MonacoWrapper = memo(
     onInput,
     onChange,
     isReadOnly = false,
+    autoFocus = false,
   }: MonacoWrapperProps) => {
     const containerRef = useRef<HTMLDivElement>(undefined!);
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -39,8 +41,15 @@ export const MonacoWrapper = memo(
       });
 
       editorRef.current = editor;
+
       return () => editor.dispose();
     }, []);
+
+    useEffect(() => {
+      if (autoFocus) {
+        editorRef.current?.focus();
+      }
+    }, [autoFocus]);
 
     useEffect(() => {
       const editor = editorRef.current;
@@ -51,6 +60,10 @@ export const MonacoWrapper = memo(
       );
       return () => disposer.dispose();
     }, [onInput]);
+
+    useEffect(() => {
+      editorRef.current?.setValue(initialValue);
+    }, [initialValue]);
 
     return (
       <div

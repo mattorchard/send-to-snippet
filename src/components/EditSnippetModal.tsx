@@ -1,12 +1,5 @@
 import { FunctionComponent, h } from "preact";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "preact/hooks";
+import { useCallback, useState } from "preact/hooks";
 import { Snippet, Upsertable } from "../types/Domain";
 import { Box } from "./Box";
 import { Button } from "./Button";
@@ -20,6 +13,7 @@ export const EditSnippetModal: FunctionComponent<{
 }> = ({ snippet, onClose, onSave }) => {
   const [draftTitle, setDraftTitle] = useState(snippet.title);
   const [draftScript, setDraftScript] = useState(snippet.script);
+  const [focusReady, setFocusReady] = useState(false);
 
   const hasUnsavedChanges =
     snippet.title !== draftTitle || snippet.script !== draftScript;
@@ -39,54 +33,55 @@ export const EditSnippetModal: FunctionComponent<{
   );
 
   return (
-    <div>
-      <Dialog
-        isOpen
-        className="edit-snippet-modal"
-        onClose={onClose}
-        onCancel={handleCancel}
+    <Dialog
+      isOpen
+      className="edit-snippet-modal"
+      onClose={onClose}
+      onCancel={handleCancel}
+    >
+      <div tabIndex={0} onFocus={() => setFocusReady(true)} />
+      <form
+        class="edit-snippet-modal__form"
+        method="dialog"
+        onSubmit={() =>
+          onSave({
+            ...snippet,
+            title: draftTitle,
+            script: draftScript,
+          })
+        }
+        onReset={() => {
+          if (confirmCancel()) onClose();
+        }}
       >
-        <form
-          class="edit-snippet-modal__form"
-          method="dialog"
-          onSubmit={() =>
-            onSave({
-              ...snippet,
-              title: draftTitle,
-              script: draftScript,
-            })
-          }
-          onReset={() => {
-            if (confirmCancel()) onClose();
-          }}
-        >
-          <Box as="header" className="edit-snippet-modal__header">
-            <Box as="h3" className="h3" p={0.5} flexGrow={2}>
-              <input
-                name="title"
-                aria-label="Title"
-                placeholder="Snippet title"
-                defaultValue={draftTitle}
-                onBlur={(e) => setDraftTitle(e.currentTarget.value)}
-                className="subtle-input"
-                type="text"
-              />
-            </Box>
-            <Box>
-              <Button type="submit">Save changes</Button>
-              <Button type="reset" intent="warning">
-                Cancel
-              </Button>
-            </Box>
+        <Box as="header" className="edit-snippet-modal__header">
+          <Box as="h3" className="h3" p={0.5} flexGrow={2}>
+            <input
+              name="title"
+              aria-label="Title"
+              placeholder="Snippet title"
+              defaultValue={draftTitle}
+              onInput={(e) => setDraftTitle(e.currentTarget.value)}
+              className="edit-snippet-modal__title-input"
+              type="text"
+            />
           </Box>
-
+          <Box>
+            <Button type="submit">Save Changes</Button>
+            <Button type="reset" intent="warning">
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+        <div className="edit-snippet-modal__content">
           <MonacoWrapper
             initialValue={snippet.script}
             onChange={setDraftScript}
             language="typescript"
+            autoFocus={focusReady}
           />
-        </form>
-      </Dialog>
-    </div>
+        </div>
+      </form>
+    </Dialog>
   );
 };

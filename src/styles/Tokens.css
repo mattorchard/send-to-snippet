@@ -1,0 +1,7 @@
+:root,
+::backdrop {
+  --transition-timing: 0.25s ease-in-out;
+  /* Todo: Swap order */
+  --white-rgb: 255, 255, 255;
+  --black-rgb: 0, 0, 0;
+}

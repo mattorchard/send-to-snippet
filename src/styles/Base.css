@@ -20,7 +20,7 @@
   --transition: 0.25s ease-in-out;
 }
 :fullscreen::backdrop {
-  /* Duplicated to abvoid undefined */
+  /* Duplicated to avoid undefined */
   background-color: #1e1e1e;
 }
 * {
@@ -332,27 +332,7 @@ dialog::backdrop {
   cursor: pointer;
 }
 
-.triangle {
-  display: inline-block;
-  height: 0;
-  width: 0;
-  border: 0.5rem solid transparent;
-  border-top-color: currentColor;
-  transform: rotateZ(var(--triangle-angle)) scaleX(calc(2 / 3));
-  --triangle-angle: 0;
-}
-.triangle--top {
-  --triangle-angle: 0deg;
-}
-.triangle--right {
-  --triangle-angle: -90deg;
-}
-.triangle--bottom {
-  --triangle-angle: 180deg;
-}
-.triangle--left {
-  --triangle-angle: 90deg;
-}
+
 
 .italics {
   font-style: italic;
