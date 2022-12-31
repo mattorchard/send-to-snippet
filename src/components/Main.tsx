@@ -15,7 +15,10 @@ import { useState } from "preact/hooks";
 import { EmptyOutputPanel, OutputPanel } from "./OutputPanel";
 import { Snippet } from "../types/Domain";
 
-export const Main: FunctionComponent = () => {
+export const Main: FunctionComponent<{
+  title: string;
+  shouldMockData: boolean;
+}> = ({ title, shouldMockData }) => {
   const { snippets, upsertSnippet, createSnippet, deleteSnippet } =
     useSnippetStore();
   const [editingSnippet, setEditingSnippetId] = useSelectedEntity(snippets);
@@ -39,10 +42,10 @@ export const Main: FunctionComponent = () => {
   return (
     <div className="main">
       <Box as="header">
-        <Heading level={1}>S2S — Options</Heading>
+        <Heading level={1}>{title}</Heading>
       </Box>
       <main className="main__content">
-        <InputPanel shouldMockData onChange={setInputText} />
+        <InputPanel shouldMockData={shouldMockData} onChange={setInputText} />
 
         <SnippetPanel
           snippets={snippets}
