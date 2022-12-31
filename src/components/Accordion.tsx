@@ -9,7 +9,7 @@ interface AccordionProps<IdType> {
   headingLevel: HeadingLevel;
   sections: AccordionSectionDetails<IdType>[];
   expandedId: IdType | null;
-  onChange: (expandedId: IdType) => void;
+  onChange: (expandedId: IdType | null) => void;
 }
 
 interface AccordionSectionDetails<IdType> {
@@ -40,7 +40,7 @@ export const Accordion: <IdType>(
             <button
               type="button"
               className="accordion__section__heading__button"
-              onClick={() => onChange(section.id)}
+              onClick={() => onChange(isExpanded ? null : section.id)}
             >
               {section.header}
               <Triangle direction={isExpanded ? "down" : "up"} />
