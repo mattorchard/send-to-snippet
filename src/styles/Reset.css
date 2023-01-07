@@ -14,7 +14,7 @@ body {
   color: var(--color-text-light);
   user-select: none;
   line-height: 1;
-  font-family: sans-serif;
+  font-family: monospace;
 }
 button {
   background: none;

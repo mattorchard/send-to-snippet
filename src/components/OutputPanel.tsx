@@ -8,6 +8,7 @@ import { Button } from "./Button";
 import { DataOutput } from "./DataOutput";
 import { ErrorAlert } from "./ErrorAlert";
 import { MainPanel } from "./MainPanel";
+import { Overlapper } from "./Overlapper";
 import { RelativeDateTime } from "./RelativeDateTime";
 import { Spinner } from "./Spinner";
 
@@ -60,7 +61,16 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
   return (
     <MainPanel
       title="Output"
-      action={<Button onClick={onRerun}>Rerun</Button>}
+      action={
+        <Button onClick={onRerun} disabled={isLoading}>
+          <Overlapper
+            sections={[
+              { content: "Rerun", isActive: !isLoading },
+              { content: <Spinner />, isActive: isLoading },
+            ]}
+          />
+        </Button>
+      }
       content={
         <div className="output-panel__content-container">
           <div className="output-panel__alert-container scrollable">
@@ -118,10 +128,7 @@ export const EmptyOutputPanel = () => (
         gap={0.75}
       >
         <h3 className="h3">View the output</h3>
-        <p>
-          Results and the output iframe will appear here after you run a
-          snippet.
-        </p>
+        <p>Results will appear here after you run a snippet.</p>
       </Box>
     }
     footer={null}

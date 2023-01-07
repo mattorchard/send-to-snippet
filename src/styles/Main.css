@@ -2,7 +2,6 @@ html {
   height: 100%;
   color: #fff;
   background-color: #31076b;
-
   background: var(--site-background);
   background-size: cover;
   backdrop-filter: blur(1px);
