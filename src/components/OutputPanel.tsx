@@ -114,11 +114,14 @@ export const EmptyOutputPanel = () => (
       <Box
         className="tile non-ideal-state"
         p={0.75}
-        alignItems="center"
         flexDirection="column"
+        gap={0.75}
       >
-        <h3 className="h3">Run</h3>
-        <p>Run a snippet to view the result and iframe here.</p>
+        <h3 className="h3">View the output</h3>
+        <p>
+          Results and the output iframe will appear here after you run a
+          snippet.
+        </p>
       </Box>
     }
     footer={null}
