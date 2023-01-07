@@ -27,7 +27,8 @@ html {
   gap: 0.5rem;
   max-height: 100%;
   overflow: hidden;
-
+}
+.glass {
   background-image: radial-gradient(circle at top, #28282880, #20182080);
   backdrop-filter: blur(1rem);
   border-radius: var(--radius);
@@ -159,4 +160,13 @@ html {
 }
 .run-btn:active {
   filter: brightness(0.9);
+}
+
+.hero__heading {
+  font-family: monospace;
+  background-image: radial-gradient(circle at top, #28282880, #20182080);
+  backdrop-filter: blur(1rem);
+  border-radius: var(--radius);
+  border: 0.5px solid #ffffff10;
+  padding: 0.25rem 1rem;
 }

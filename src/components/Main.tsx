@@ -42,7 +42,9 @@ export const Main: FunctionComponent<{
   return (
     <div className="main">
       <Box as="header">
-        <Heading level={1}>{title}</Heading>
+        <Heading level={1} className="hero__heading glass">
+          {title}
+        </Heading>
       </Box>
       <main className="main__content">
         <InputPanel shouldMockData={shouldMockData} onChange={setInputText} />

@@ -10,7 +10,7 @@ export const MainPanel: FunctionComponent<{
   content: Renderable;
   footer: Renderable;
 }> = ({ title, action, content, footer }) => (
-  <section className="main__panel">
+  <section className="main__panel glass">
     <Box
       as="header"
       className="main__panel__header"
