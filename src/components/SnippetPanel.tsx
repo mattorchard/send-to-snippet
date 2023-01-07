@@ -12,6 +12,7 @@ type SnippetIdHandler = (id: Snippet["id"]) => void;
 
 interface SnippetPanelProps {
   snippets: Snippet[] | null;
+  runningSnippetId: string | null;
   onDelete: SnippetIdHandler;
   onEdit: SnippetIdHandler;
   onRun: SnippetIdHandler;
@@ -20,6 +21,7 @@ interface SnippetPanelProps {
 
 export const SnippetPanel: FunctionComponent<SnippetPanelProps> = ({
   snippets,
+  runningSnippetId,
   onDelete,
   onEdit,
   onRun,
@@ -43,6 +45,7 @@ export const SnippetPanel: FunctionComponent<SnippetPanelProps> = ({
                 <li key={snippet.id}>
                   <SnippetTile
                     snippet={snippet}
+                    isActiveRunner={snippet.id === runningSnippetId}
                     onDelete={() => onDelete(snippet.id)}
                     onEdit={() => onEdit(snippet.id)}
                     onRun={() => onRun(snippet.id)}

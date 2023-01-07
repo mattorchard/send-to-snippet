@@ -1,7 +1,15 @@
 :root,
 ::backdrop {
-  --transition-timing: 0.25s ease-in-out;
-  /* Todo: Swap order */
+  --background-url: url("../assets/jr-korpa-md.jpg");
+  --site-background: var(--background-url),
+    linear-gradient(45deg, #7a128500 40%, #7a1285 60%, #220a60),
+    radial-gradient(circle at 33% 33%, #200765, #050414);
+  --transition-timing: 0.2s ease-in-out;
   --white-rgb: 255, 255, 255;
   --black-rgb: 0, 0, 0;
+  --color-accent: #e51062;
+  --color-primary: rgb(55, 55, 182);
+  --color-mid: #1e1e1e;
+  --color-dark: #18181a;
+  --radius: 0.25rem;
 }

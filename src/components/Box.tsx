@@ -38,7 +38,6 @@ const defaultElement = "div";
 const applySizingUnit = (value: PaddingType | MarginType) =>
   typeof value === "number" ? `${value}rem` : value;
 
-
 export const Box: <E extends JSX.ElementType = typeof defaultElement>(
   props: BoxProps<E>
 ) => JSX.Element | null = forwardRef(

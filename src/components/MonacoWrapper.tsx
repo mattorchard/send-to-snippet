@@ -68,7 +68,7 @@ export const MonacoWrapper = memo(
     return (
       <div
         ref={containerRef}
-        className="monaco-wrapper"
+        className="monaco-wrapper tile"
         onBlur={() => {
           onChange?.(editorRef.current?.getValue() ?? "");
         }}

@@ -54,8 +54,12 @@ export const EditSnippetModal: FunctionComponent<{
           if (confirmCancel()) onClose();
         }}
       >
-        <Box as="header" className="edit-snippet-modal__header">
-          <Box as="h3" className="h3" p={0.5} flexGrow={2}>
+        <Box
+          as="header"
+          className="edit-snippet-modal__header"
+          alignItems="center"
+        >
+          <Box as="h3" className="h3" flexGrow={2}>
             <input
               name="title"
               aria-label="Title"
@@ -66,7 +70,7 @@ export const EditSnippetModal: FunctionComponent<{
               type="text"
             />
           </Box>
-          <Box>
+          <Box p={0.25}>
             <Button type="submit">Save Changes</Button>
             <Button type="reset" intent="warning">
               Cancel

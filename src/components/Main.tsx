@@ -49,6 +49,7 @@ export const Main: FunctionComponent<{
 
         <SnippetPanel
           snippets={snippets}
+          runningSnippetId={runState?.snippet.id ?? null}
           onAdd={createSnippet}
           onDelete={deleteSnippet}
           onEdit={setEditingSnippetId}

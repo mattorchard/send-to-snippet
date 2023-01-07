@@ -9,6 +9,7 @@ import { DataOutput } from "./DataOutput";
 import { ErrorAlert } from "./ErrorAlert";
 import { MainPanel } from "./MainPanel";
 import { RelativeDateTime } from "./RelativeDateTime";
+import { Spinner } from "./Spinner";
 
 interface OutputPanelProps {
   script: string;
@@ -73,6 +74,7 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
             headingLevel={3}
             expandedId={expandedSectionId}
             onChange={setExpandedSectionId}
+            sectionClassName="tile"
             sections={[
               {
                 id: sectionIds.RESULT,
@@ -94,7 +96,7 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
       }
       footer={
         isLoading ? (
-          "Loading..."
+          <Spinner />
         ) : (
           <span>
             Last run <RelativeDateTime date={runAt} /> ago
@@ -108,7 +110,17 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
 export const EmptyOutputPanel = () => (
   <MainPanel
     title="Output"
-    content={<p>Run a snippet to view the output and iframe here.</p>}
+    content={
+      <Box
+        className="tile non-ideal-state"
+        p={0.75}
+        alignItems="center"
+        flexDirection="column"
+      >
+        <h3 className="h3">Run</h3>
+        <p>Run a snippet to view the result and iframe here.</p>
+      </Box>
+    }
     footer={null}
   />
 );

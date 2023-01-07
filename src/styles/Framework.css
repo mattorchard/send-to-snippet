@@ -2,9 +2,19 @@ html {
   color-scheme: dark;
 }
 .btn {
-  background-color: #333;
+  border: 0.125rem solid var(--color-primary);
+  background-color: var(--color-mid);
   padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  transition: background-color var(--transition-timing);
 }
+.btn:hover {
+  background-color: var(--color-primary);
+}
+.btn + .btn {
+  margin-left: 0.25rem;
+}
+
 .skeleton {
   animation: skeleton__pulse 3s ease-in-out infinite alternate;
 }
@@ -78,7 +88,7 @@ html::-webkit-scrollbar-thumb,
   max-width: 100%;
 }
 .accordion__section {
-  background-color: #1e1e1e;
+  background-color: var(--color-mid);
   display: grid;
   grid-template-rows: auto 1fr;
   transition: flex var(--transition-timing);
@@ -105,13 +115,23 @@ html::-webkit-scrollbar-thumb,
   height: 1em;
   width: 1em;
   transition: transform var(--transition-timing);
-  transform: scale(0.5) rotateZ(calc(var(--triangle__angle) * 1deg));
+  transform: rotateZ(calc(var(--triangle__angle) * 1deg));
 }
 
 .monaco-wrapper {
   height: 100%;
   overflow: hidden;
   max-height: 200vh;
+}
+.tile {
+  opacity: 0.8;
+  border-radius: var(--radius);
+  transition: opacity var(--transition-timing);
+}
+.tile:focus,
+.tile:focus-within,
+.tile:hover {
+  opacity: 0.95;
 }
 
 .monaco-wrapper * {
@@ -120,7 +140,7 @@ html::-webkit-scrollbar-thumb,
 
 .alert {
   /* Todo */
-  background-color: #1e1e1e;
+  background-color: var(--color-mid);
   border-left: 1rem solid;
   padding: 0.5rem;
 }
@@ -136,4 +156,39 @@ html::-webkit-scrollbar-thumb,
 .alert.alert--success {
   /* Todo */
   border-color: dodgerblue;
+}
+
+.overlapper {
+  display: grid;
+}
+.overlapper__content {
+  grid-row: 1;
+  grid-column: 1;
+  visibility: hidden;
+}
+
+.overlapper__content--is-active {
+  visibility: visible;
+}
+
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  animation: spinner__spin 1s linear infinite;
+  border: 0.1875rem solid currentColor;
+  border-right-color: transparent;
+  border-radius: 1000px;
+}
+@keyframes spinner__spin {
+  from {
+    transform: rotateZ(0turn);
+  }
+  to {
+    transform: rotateZ(1turn);
+  }
+}
+
+.non-ideal-state {
+  background-color: var(--color-mid);
 }

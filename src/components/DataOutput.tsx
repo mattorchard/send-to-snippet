@@ -28,7 +28,7 @@ export const DataOutput: FunctionComponent<{ data: unknown }> = memo(
 
     return (
       <div className="data-output">
-        <Box justifyContent="flex-end">
+        <Box justifyContent="flex-end" mb={0.75} mr={0.75}>
           <Button onClick={() => navigator.clipboard.writeText(stringData)}>
             Copy Text
           </Button>
