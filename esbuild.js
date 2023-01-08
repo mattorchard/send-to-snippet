@@ -10,7 +10,7 @@ const buildOptions = {
     "./src/entries/snippets.tsx",
     "./src/entries/options.tsx",
     "./src/entries/sandbox.ts",
-    "node_modules/monaco-editor/esm/vs/language/typescript/ts.worker.js",
+    "node_modules/monaco-editor/min/vs/language/typescript/tsWorker.js",
     "node_modules/monaco-editor/esm/vs/language/json/json.worker.js",
     "node_modules/monaco-editor/esm/vs/editor/editor.worker.js",
   ],
