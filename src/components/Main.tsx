@@ -40,7 +40,7 @@ export const Main: FunctionComponent<{
   };
 
   return (
-    <div className="main">
+    <div className="main--s2s">
       <Box as="header">
         <Heading level={1} className="hero__heading glass">
           {title}
