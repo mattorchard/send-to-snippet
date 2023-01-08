@@ -84,6 +84,10 @@ html {
 .output-panel__alert-container {
   overflow-x: auto;
 }
+.output-panel__alert-container:not(:empty) {
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.75rem;
+}
 
 .data-output {
   display: grid;

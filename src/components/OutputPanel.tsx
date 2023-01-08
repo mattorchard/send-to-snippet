@@ -80,11 +80,7 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
       content={
         <div className="output-panel__content-container">
           <div className="output-panel__alert-container scrollable">
-            {error && (
-              <Box mb={1}>
-                <ErrorAlert error={error} />
-              </Box>
-            )}
+            {error && <ErrorAlert error={error} />}
           </div>
           <Accordion
             headingLevel={3}

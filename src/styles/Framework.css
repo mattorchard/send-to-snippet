@@ -144,6 +144,7 @@ html::-webkit-scrollbar-thumb,
   background-color: var(--color-mid);
   border-left: 1rem solid;
   padding: 0.5rem;
+  border-radius: var(--radius);
 }
 
 .alert.alert--warning {
