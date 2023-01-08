@@ -1,4 +1,5 @@
 import { h, FunctionComponent } from "preact";
+import { closestElement } from "../helpers/elementHelpers";
 import { bem } from "../helpers/StyleHelper";
 import { Snippet } from "../types/Domain";
 import { Box } from "./Box";
@@ -26,14 +27,7 @@ export const SnippetTile: FunctionComponent<SnippetTileProps> = ({
     <div
       className="snippet-tile tile"
       onClick={({ target }) => {
-        if (!(target instanceof Node)) return;
-        const element =
-          target instanceof HTMLElement ? target : target.parentElement!;
-
-        // Action buttons do not trigger run
-        if (element.closest("[data-action-buttons]")) return;
-
-        onRun();
+        if (!closestElement(target, `[${actionButtonsProperty}]`)) onRun();
       }}
     >
       <Box
@@ -50,7 +44,7 @@ export const SnippetTile: FunctionComponent<SnippetTileProps> = ({
         <p>
           Updated: <DateTime date={snippet.updatedAt} />
         </p>
-        <Box data-action-buttons={true}>
+        <Box {...{ [actionButtonsProperty]: true }}>
           <Button onClick={onEdit}>Edit</Button>
           <Button
             onClick={() => {
@@ -83,5 +77,6 @@ export const SnippetTile: FunctionComponent<SnippetTileProps> = ({
     </div>
   );
 };
+const actionButtonsProperty = `data-snippet-tile-actions-buttons`;
 
 const FALLBACK_TITLE = `Untitled Snippet`;

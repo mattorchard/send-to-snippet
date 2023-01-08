@@ -1,5 +1,5 @@
 import { h, FunctionComponent, Fragment } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { useSandbox } from "../hooks/useSandbox";
 import { ValueOf } from "../types/UtilityTypes";
 import { Accordion } from "./Accordion";
@@ -32,6 +32,7 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
   runAt,
   onRerun,
 }) => {
+  const panelRef = useRef<HTMLElement>(undefined!);
   const {
     renderSandbox,
     isLoading,
@@ -50,6 +51,10 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
   );
 
   useEffect(() => {
+    if (isLoading) panelRef.current.scrollIntoView({ behavior: "auto" });
+  });
+
+  useEffect(() => {
     if (isLoading) return;
     if (result) {
       setExpandedSectionId(sectionIds.RESULT);
@@ -61,6 +66,7 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
   return (
     <MainPanel
       title="Output"
+      ref={panelRef}
       action={
         <Button onClick={onRerun} disabled={isLoading}>
           <Overlapper

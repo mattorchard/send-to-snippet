@@ -193,3 +193,9 @@ html::-webkit-scrollbar-thumb,
 .non-ideal-state {
   background-color: var(--color-mid);
 }
+.glass {
+  background-image: radial-gradient(circle at top, #28282880, #20182080);
+  backdrop-filter: blur(0.75rem);
+  border-radius: var(--radius);
+  border: 0.5px solid #ffffff10;
+}
