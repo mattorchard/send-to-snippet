@@ -9,7 +9,7 @@ interface MainPanelProps {
   title: Renderable;
   action?: Renderable;
   content: Renderable;
-  footer: Renderable;
+  footer?: Renderable;
   ref?: Ref<HTMLElement>;
 }
 

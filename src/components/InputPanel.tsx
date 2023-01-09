@@ -44,12 +44,6 @@ export const InputPanel: FunctionComponent<{
           />
         )
       }
-      footer={
-        // Todo: Make details visible in modal
-        <span className="ellipses">
-          From: {contextState.contextMenuInfo?.srcUrl ?? "Unknown"}
-        </span>
-      }
     />
   );
 };

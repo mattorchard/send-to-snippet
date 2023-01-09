@@ -17,6 +17,7 @@ html {
 }
 
 .skeleton {
+  border-radius: var(--radius);
   animation: skeleton__pulse 3s ease-in-out infinite alternate;
 }
 @keyframes skeleton__pulse {
@@ -38,10 +39,10 @@ html {
     0 var(--scroll-shadows__bottom) var(--scroll-shadows__bs);
 }
 .scroll-shadows[data-is-at-scroll-top="false"] {
-  --scroll-shadows__top: 2rem;
+  --scroll-shadows__top: 1.5rem;
 }
 .scroll-shadows[data-is-at-scroll-bottom="false"] {
-  --scroll-shadows__bottom: -2rem;
+  --scroll-shadows__bottom: -1.5rem;
 }
 
 html::-webkit-scrollbar,
