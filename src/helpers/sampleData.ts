@@ -44,6 +44,6 @@ window.alert(input);`,
 ];
 
 export const sampleSnippetSkeleton: Upsertable<Snippet> = {
-  title: "New Snippet",
+  title: "",
   script: `return input.toUpperCase();`,
 };
