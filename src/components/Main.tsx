@@ -11,7 +11,7 @@ import { SnippetPanel } from "./SnippetPanel";
 import { useSelectedEntity } from "../hooks/useSelectedEntity";
 import { EditSnippetModal } from "./EditSnippetModal";
 import { InputPanel } from "./InputPanel";
-import { useState } from "preact/hooks";
+import { useCallback, useState } from "preact/hooks";
 import { EmptyOutputPanel, OutputPanel } from "./OutputPanel";
 import { Snippet } from "../types/Domain";
 
@@ -38,6 +38,8 @@ export const Main: FunctionComponent<{
       inputText,
     });
   };
+
+  const handleCloseModal = useCallback(() => setEditingSnippetId(null), []);
 
   return (
     <div className="main--s2s">
@@ -73,7 +75,7 @@ export const Main: FunctionComponent<{
         <EditSnippetModal
           snippet={editingSnippet}
           onSave={upsertSnippet}
-          onClose={() => setEditingSnippetId(null)}
+          onClose={handleCloseModal}
         />
       )}
     </div>
