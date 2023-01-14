@@ -3,9 +3,10 @@ const appendModifier = (prefix: string, modifier: string) =>
 
 export const bem = (
   prefix: string,
-  modifiers: Array<string> | Record<string, any>
+  modifiers: Array<string> | Record<string, any>,
+  extras?: string
 ) => {
-  const classList = [prefix];
+  const classList = [extras, prefix];
   if (Array.isArray(modifiers)) {
     for (const modifierName of modifiers) {
       classList.push(appendModifier(prefix, modifierName));

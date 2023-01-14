@@ -14,6 +14,7 @@ import { InputPanel } from "./InputPanel";
 import { useCallback, useState } from "preact/hooks";
 import { EmptyOutputPanel, OutputPanel } from "./OutputPanel";
 import { Snippet } from "../types/Domain";
+import { PermissionAlert } from "./PermissionAlert";
 
 export const Main: FunctionComponent<{
   title: string;
@@ -43,10 +44,11 @@ export const Main: FunctionComponent<{
 
   return (
     <div className="main--s2s">
-      <Box as="header">
+      <Box as="header" justifyContent="space-between">
         <Heading level={1} className="hero__heading glass">
           {title}
         </Heading>
+        <PermissionAlert />
       </Box>
       <main className="main__content">
         <InputPanel shouldMockData={shouldMockData} onChange={setInputText} />

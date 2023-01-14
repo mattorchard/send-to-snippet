@@ -11,5 +11,7 @@
   --color-primary: rgb(55, 55, 182);
   --color-mid: #1e1e1e;
   --color-dark: #18181a;
+  --color-danger: crimson;
+  --color-warning: darkorange;
   --radius: 0.25rem;
 }
