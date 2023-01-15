@@ -68,7 +68,7 @@ export const MonacoWrapper = memo(
         editorRef.current?.addCommand(
           monaco.KeyCode.Escape,
           onEscapeLive,
-          "!findWidgetVisible && !inReferenceSearchEditor && !editorHasSelection"
+          "!findWidgetVisible && !inReferenceSearchEditor && !editorHasSelection && !suggestWidgetVisible"
         );
       }, [onEscape]);
 

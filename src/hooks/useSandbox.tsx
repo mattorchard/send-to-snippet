@@ -1,6 +1,5 @@
 import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import { createId } from "../helpers/idHelpers";
 import { LinkHrefs } from "../helpers/LinkHrefs";
 import { useSandboxReply } from "./useSandboxReply";
 
