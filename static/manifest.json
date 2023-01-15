@@ -25,6 +25,13 @@
     },
     "default_title": "Open Send 2 Snippet"
   },
+  "icons": {
+    "16": "icons/s2s-icon-16.png",
+    "32": "icons/s2s-icon-32.png",
+    "64": "icons/s2s-icon-64.png",
+    "128": "icons/s2s-icon-128.png",
+    "256": "icons/s2s-icon-256.png"
+  },
   "background": {
     "service_worker": "src/entries/serviceWorker.js",
     "type": "module"
