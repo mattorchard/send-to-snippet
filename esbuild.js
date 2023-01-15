@@ -24,7 +24,7 @@ const buildOptions = {
   jsx: "automatic",
   loader: {
     ".ttf": "dataurl",
-    ".jpg": "copy",
+    ".jpg": "file",
   },
   plugins: [
     copyStaticFiles({

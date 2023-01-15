@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from "preact/hooks";
 import { EmptyOutputPanel, OutputPanel } from "./OutputPanel";
 import { Snippet } from "../types/Domain";
 import { PermissionAlert } from "./PermissionAlert";
+import { BackgroundPicture } from "./BackgroundPicture";
 
 export const Main: FunctionComponent<{
   title: string;
@@ -93,6 +94,7 @@ export const Main: FunctionComponent<{
           onClose={handleCloseModal}
         />
       )}
+      <BackgroundPicture />
     </div>
   );
 };

@@ -173,3 +173,12 @@ html {
   border: 0.5px solid #ffffff10;
   padding: 0.25rem 1rem;
 }
+
+.background-picture {
+  position: fixed;
+  user-select: none;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100vmax;
+}
