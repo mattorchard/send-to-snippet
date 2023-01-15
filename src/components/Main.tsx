@@ -11,7 +11,7 @@ import { SnippetPanel } from "./SnippetPanel";
 import { useSelectedEntity } from "../hooks/useSelectedEntity";
 import { EditSnippetModal } from "./EditSnippetModal";
 import { InputPanel } from "./InputPanel";
-import { useCallback, useState } from "preact/hooks";
+import { useCallback, useEffect, useState } from "preact/hooks";
 import { EmptyOutputPanel, OutputPanel } from "./OutputPanel";
 import { Snippet } from "../types/Domain";
 import { PermissionAlert } from "./PermissionAlert";
@@ -20,10 +20,13 @@ export const Main: FunctionComponent<{
   title: string;
   shouldMockData: boolean;
 }> = ({ title, shouldMockData }) => {
+  const [inputText, setInputText] = useState("");
+
   const { snippets, upsertSnippet, createSnippet, deleteSnippet } =
     useSnippetStore();
+
   const [editingSnippet, setEditingSnippetId] = useSelectedEntity(snippets);
-  const [inputText, setInputText] = useState("");
+  const handleCloseModal = useCallback(() => setEditingSnippetId(null), []);
 
   const [runState, setRunState] = useState<RunState | null>(null);
 
@@ -40,7 +43,17 @@ export const Main: FunctionComponent<{
     });
   };
 
-  const handleCloseModal = useCallback(() => setEditingSnippetId(null), []);
+  // Rerun modified snippets
+  useEffect(() => {
+    if (!runState) return;
+    const liveSnippet = snippets?.find(
+      (snip) => snip.id === runState.snippet.id
+    );
+    if (!liveSnippet) return;
+    if (liveSnippet.updatedAt < runState.runAt) return;
+
+    runSnippet(liveSnippet.id);
+  }, [snippets]);
 
   return (
     <div className="main--s2s">
