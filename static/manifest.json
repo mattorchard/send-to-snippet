@@ -15,6 +15,9 @@
   "host_permissions": [
     "<all_urls>"
   ],
+  "action": {
+    "default_icon": {}
+  },
   "background": {
     "service_worker": "src/entries/serviceWorker.js",
     "type": "module"

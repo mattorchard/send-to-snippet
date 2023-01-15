@@ -83,6 +83,9 @@ const ChromeWrapper = {
   addStorageListener: (
     listener: (changes: { [key: string]: chrome.storage.StorageChange }) => void
   ) => chrome.storage.local.onChanged.addListener(listener),
+
+  addOnActionClickListener: (listener: () => void) =>
+    chrome.action.onClicked.addListener(listener),
 } as const;
 
 // Chrome implementation is primary, so drives mocks and other implementations
@@ -125,6 +128,8 @@ const LocalhostExtension: Extension = {
   setStorage: async () => {},
 
   addStorageListener: () => {},
+
+  addOnActionClickListener: () => {},
 };
 
 const shouldMock = self.location.host.startsWith("localhost");

@@ -29,4 +29,8 @@ extension.addOnContextMenuClicked(async (baseContextMenuInfo, sourceTab) => {
   await extension.createTab(LinkHrefs.snippetTarget(createdDrop.id));
 });
 
+extension.addOnActionClickListener(() =>
+  extension.createTab(LinkHrefs.options)
+);
+
 export default {};
