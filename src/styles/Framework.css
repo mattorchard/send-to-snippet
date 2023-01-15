@@ -94,6 +94,7 @@ html::-webkit-scrollbar-thumb,
   display: grid;
   grid-template-rows: auto 1fr;
   transition: flex var(--transition-timing);
+  overflow: hidden;
 }
 .accordion__section--is-expanded {
   flex-grow: 2;
