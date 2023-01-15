@@ -99,7 +99,7 @@ export class SnippetStore {
     );
 
   private injectSamples = async () => {
-    const newSnippets = bulkUpsert([], sampleSnippets);
+    const newSnippets = bulkUpsert([], [...sampleSnippets].reverse());
     logger.debug("Injecting samples", newSnippets);
     await this.saveSnippets(newSnippets);
     this.observable.setCurrentValue({
