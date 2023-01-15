@@ -1,11 +1,15 @@
-import { wrapError } from "../helpers/errorHelpers";
+import {
+  bulkUpsert,
+  deleteEntity,
+  upsertEntity,
+} from "../helpers/entityHelpers";
+import { extension } from "../helpers/Extension";
 import { combineIdentifiers } from "../helpers/idHelpers";
 import { Logger } from "../helpers/Logger";
 import { Observable } from "../helpers/Observable";
-import { sampleSnippetSkeleton } from "../helpers/sampleData";
-import { snippetRepository } from "../helpers/SnippetRepository";
-import { Snippet, Upsertable } from "../types/Domain";
-import { PromiseState } from "../types/UtilityTypes";
+import { sampleSnippets, sampleSnippetSkeleton } from "../helpers/sampleData";
+import { EntityId, Snippet, Upsertable } from "../types/Domain";
+import { Jsonified, PromiseState } from "../types/UtilityTypes";
 
 const logger = new Logger("SnippetStore");
 
@@ -13,43 +17,48 @@ type SnippetStorePromiseState = PromiseState<Snippet[] | null, "snippets">;
 
 type SnippetObserver = (state: SnippetStorePromiseState) => void;
 
-class SnippetStore {
+export class SnippetStore {
+  private static readonly StorageKey = combineIdentifiers("Snippets", "v1");
   private readonly observable = new Observable<SnippetStorePromiseState>({
     error: null,
     isLoading: true,
     snippets: null,
   });
-  private readonly channel: BroadcastChannel;
 
   constructor() {
-    this.channel = new BroadcastChannel(
-      combineIdentifiers("SnippetStore", "v1")
-    );
-    this.channel.addEventListener("message", (event) =>
-      this.onMessageEvent(event)
-    );
-    this.channel.addEventListener("messageerror", (event) =>
-      logger.error("Message error", event)
-    );
-    this.setupInitialSnippets();
+    this.init();
   }
 
-  private setupInitialSnippets = async () => {
-    try {
-      const snippets = await snippetRepository.getAllSnippets();
-      if (!this.observable.value.isLoading) return;
-      this.setSnippets(snippets);
-    } catch (error) {
-      logger.error(`Failed to get snippets`, error);
-      this.observable.setCurrentValue({
-        snippets: null,
-        isLoading: false,
-        error: wrapError(error),
-      });
-    }
+  private init = () => {
+    extension.getStorage([SnippetStore.StorageKey], (data) => {
+      const snippetData = data[SnippetStore.StorageKey];
+      this.handleSnippetChange(snippetData);
+    });
+    extension.addStorageListener((changes) => {
+      if (!(SnippetStore.StorageKey in changes)) return;
+      const snippetData = changes[SnippetStore.StorageKey].newValue;
+      this.handleSnippetChange(snippetData);
+    });
   };
 
-  private setSnippets = (snippets: Snippet[]) => {
+  private handleSnippetChange = (rawSnippetData: unknown) => {
+    const isEmptyArray =
+      Array.isArray(rawSnippetData) && rawSnippetData.length === 0;
+    if (!rawSnippetData || isEmptyArray) {
+      this.injectSamples();
+      return;
+    }
+    if (!Array.isArray(rawSnippetData)) {
+      this.observable.setCurrentValue({
+        snippets: this.observable.value.snippets,
+        isLoading: false,
+        error: new Error(`Store returned malformed snippets`),
+      });
+      return;
+    }
+
+    const snippets = rawSnippetData.map(SnippetStore.fromSerial);
+    logger.debug("Snippets changed", snippets);
     this.observable.setCurrentValue({
       snippets,
       isLoading: false,
@@ -57,72 +66,65 @@ class SnippetStore {
     });
   };
 
-  private onMessageEvent = (event: MessageEvent<SnippetStoreMessage>) => {
-    logger.debug("Message received", event.data);
-    switch (event.data.kind) {
-      case "snippets-changed":
-        this.setSnippets(event.data.snippets);
-        break;
-    }
+  private saveSnippets = (snippets: Snippet[]) =>
+    extension.setStorage({
+      [SnippetStore.StorageKey]: snippets.map(SnippetStore.toSerial),
+    });
+
+  private applySnippetChange = async (
+    transformSnippets: (oldSnippets: Snippet[]) => Snippet[]
+  ) => {
+    if (!this.observable.value.snippets)
+      throw new Error(`Cannot modify snippets before snippets have loaded`);
+    const newSnippets = transformSnippets(this.observable.value.snippets);
+    await this.saveSnippets(newSnippets);
+    this.observable.setCurrentValue({
+      error: null,
+      isLoading: false,
+      snippets: newSnippets,
+    });
   };
 
-  private postMessage = (message: SnippetStoreMessage) => {
-    logger.debug("Sending message", message);
-    this.channel.postMessage(message);
+  public deleteSnippet = async (idToDelete: EntityId) =>
+    this.applySnippetChange((snippets) => deleteEntity(snippets, idToDelete));
+
+  public upsertSnippet = (snippetToUpsert: Upsertable<Snippet>) =>
+    this.applySnippetChange((snippets) =>
+      upsertEntity(snippets, snippetToUpsert)
+    );
+
+  public createSnippet = () =>
+    this.applySnippetChange((snippets) =>
+      upsertEntity(snippets, sampleSnippetSkeleton)
+    );
+
+  private injectSamples = async () => {
+    const newSnippets = bulkUpsert([], sampleSnippets);
+    logger.debug("Injecting samples", newSnippets);
+    await this.saveSnippets(newSnippets);
+    this.observable.setCurrentValue({
+      error: null,
+      isLoading: false,
+      snippets: newSnippets,
+    });
   };
 
-  private notifyOtherFramesSnippetsChanged = () => {
-    if (!this.snippets) return;
-    this.postMessage({ kind: "snippets-changed", snippets: this.snippets });
-  };
+  public getCurrentValue = () => this.observable.value;
 
-  public deleteSnippet = async (idToDelete: string) => {
-    if (!this.snippets) throw new Error(`Cannot delete snippet before loaded`);
+  public subscribe = (observer: SnippetObserver) =>
+    this.observable.subscribe(observer);
 
-    await snippetRepository.deleteSnippet(idToDelete);
+  private static toSerial = (snippet: Snippet): Jsonified<Snippet> => ({
+    ...snippet,
+    createdAt: snippet.createdAt.toISOString(),
+    updatedAt: snippet.updatedAt.toISOString(),
+  });
 
-    this.setSnippets(this.snippets.filter((snip) => snip.id !== idToDelete));
-    this.notifyOtherFramesSnippetsChanged();
-  };
-
-  public upsertSnippet = async (snippetToUpsert: Upsertable<Snippet>) => {
-    if (!this.snippets) throw new Error(`Cannot upsert snippet before loaded`);
-
-    const upsertedSnip = await snippetRepository.upsertSnippet(snippetToUpsert);
-
-    const wasUpdate = Boolean(snippetToUpsert.id);
-    if (wasUpdate) {
-      this.setSnippets(
-        this.snippets.map((snip) =>
-          snip.id === snippetToUpsert.id ? upsertedSnip : snip
-        )
-      );
-    } else {
-      this.setSnippets([upsertedSnip, ...this.snippets]);
-    }
-    this.notifyOtherFramesSnippetsChanged();
-  };
-
-  public createSnippet = async () => {
-    await this.upsertSnippet({ ...sampleSnippetSkeleton });
-  };
-
-  private get snippets() {
-    return this.observable.value.snippets;
-  }
-
-  public getCurrentValue = () => {
-    return this.observable.value;
-  };
-
-  public subscribe = (observer: SnippetObserver) => {
-    return this.observable.subscribe(observer);
-  };
+  private static fromSerial = (snippet: Jsonified<Snippet>): Snippet => ({
+    ...snippet,
+    createdAt: new Date(snippet.createdAt),
+    updatedAt: new Date(snippet.updatedAt),
+  });
 }
-
-type SnippetStoreMessage = {
-  kind: "snippets-changed";
-  snippets: Snippet[];
-};
 
 export const snippetStore = new SnippetStore();

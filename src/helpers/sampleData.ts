@@ -24,19 +24,16 @@ Integer non leo molestie, ornare dui quis, cursus nulla.`;
 
 export const sampleSnippets: Upsertable<Snippet>[] = [
   {
-    id: "sample-document",
     title: "Sample Document Snippet",
     script: `// You can put visuals into the body of the the iframe that your code is run within.
 document.body.innerText = input.toLowerCase();`,
   },
   {
-    id: "sample-text",
     title: "Sample Text Snippet",
     script: `// You can return text or serialized data and it will appear in the text output. 
 return input.toUpperCase();`,
   },
   {
-    id: "sample-effect",
     title: "Sample Effect Snippet",
     script: `// You can even write a script with no output or visuals, if you just want to run an effect.
 window.alert(input);`,

@@ -1,5 +1,5 @@
 import { DBSchema, IDBPDatabase, openDB } from "idb";
-import { MailboxDrop, Snippet, Upsertable } from "../types/Domain";
+import { EntityId, MailboxDrop, Snippet, Upsertable } from "../types/Domain";
 import { config } from "./config";
 import { createId } from "./idHelpers";
 import { Logger } from "./Logger";
@@ -18,7 +18,7 @@ const Mdb = {
 interface MailboxDb extends DBSchema {
   drops: {
     value: MailboxDrop;
-    key: string;
+    key: EntityId;
     indexes: {
       [Mdb.indexes.createdAt]: MailboxDrop["createdAt"];
       [Mdb.indexes.updatedAt]: MailboxDrop["updatedAt"];
@@ -44,7 +44,7 @@ class MailboxRepository {
     });
   }
 
-  async getDrop(id: string) {
+  async getDrop(id: EntityId) {
     const db = await this.dbPromise;
     return (await db.get(Mdb.stores.drops, id)) ?? null;
   }
@@ -87,7 +87,7 @@ class MailboxRepository {
     await Promise.all(dropsToDelete.map((drop) => this.deleteDrop(drop.id)));
   }
 
-  private async deleteDrop(id: string) {
+  private async deleteDrop(id: EntityId) {
     const db = await this.dbPromise;
     await db.delete(Mdb.stores.drops, id);
   }
