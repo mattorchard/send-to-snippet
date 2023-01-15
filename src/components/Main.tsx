@@ -16,6 +16,7 @@ import { EmptyOutputPanel, OutputPanel } from "./OutputPanel";
 import { Snippet } from "../types/Domain";
 import { PermissionAlert } from "./PermissionAlert";
 import { BackgroundPicture } from "./BackgroundPicture";
+import { Logger } from "../helpers/Logger";
 
 export const Main: FunctionComponent<{
   title: string;
@@ -34,7 +35,7 @@ export const Main: FunctionComponent<{
   const runSnippet = (snipIdToRun: string) => {
     const snippet = snippets?.find((snip) => snip.id === snipIdToRun);
     if (!snippet) {
-      console.debug("Can't find snippet to run");
+      logger.warn("Can't find snippet to run", snipIdToRun);
       return;
     }
     return setRunState({
@@ -98,6 +99,8 @@ export const Main: FunctionComponent<{
     </div>
   );
 };
+
+const logger = new Logger("Main");
 
 interface RunState {
   runAt: Date;
