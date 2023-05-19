@@ -11,25 +11,31 @@ import { SnippetPanel } from "./SnippetPanel";
 import { useSelectedEntity } from "../hooks/useSelectedEntity";
 import { EditSnippetModal } from "./EditSnippetModal";
 import { InputPanel } from "./InputPanel";
-import { useState } from "preact/hooks";
+import { useCallback, useEffect, useState } from "preact/hooks";
 import { EmptyOutputPanel, OutputPanel } from "./OutputPanel";
 import { Snippet } from "../types/Domain";
+import { PermissionAlert } from "./PermissionAlert";
+import { BackgroundPicture } from "./BackgroundPicture";
+import { Logger } from "../helpers/Logger";
 
 export const Main: FunctionComponent<{
   title: string;
   shouldMockData: boolean;
 }> = ({ title, shouldMockData }) => {
+  const [inputText, setInputText] = useState("");
+
   const { snippets, upsertSnippet, createSnippet, deleteSnippet } =
     useSnippetStore();
+
   const [editingSnippet, setEditingSnippetId] = useSelectedEntity(snippets);
-  const [inputText, setInputText] = useState("");
+  const handleCloseModal = useCallback(() => setEditingSnippetId(null), []);
 
   const [runState, setRunState] = useState<RunState | null>(null);
 
   const runSnippet = (snipIdToRun: string) => {
     const snippet = snippets?.find((snip) => snip.id === snipIdToRun);
     if (!snippet) {
-      console.debug("Can't find snippet to run");
+      logger.warn("Can't find snippet to run", snipIdToRun);
       return;
     }
     return setRunState({
@@ -39,16 +45,32 @@ export const Main: FunctionComponent<{
     });
   };
 
+  // Rerun modified snippets
+  useEffect(() => {
+    if (!runState) return;
+    const liveSnippet = snippets?.find(
+      (snip) => snip.id === runState.snippet.id
+    );
+    if (!liveSnippet) return;
+    if (liveSnippet.updatedAt < runState.runAt) return;
+
+    runSnippet(liveSnippet.id);
+  }, [snippets]);
+
   return (
-    <div className="main">
-      <Box as="header">
-        <Heading level={1}>{title}</Heading>
+    <div className="main--s2s">
+      <Box as="header" justifyContent="space-between">
+        <Heading level={1} className="hero__heading glass">
+          {title}
+        </Heading>
+        <PermissionAlert />
       </Box>
       <main className="main__content">
         <InputPanel shouldMockData={shouldMockData} onChange={setInputText} />
 
         <SnippetPanel
           snippets={snippets}
+          runningSnippetId={runState?.snippet.id ?? null}
           onAdd={createSnippet}
           onDelete={deleteSnippet}
           onEdit={setEditingSnippetId}
@@ -70,12 +92,15 @@ export const Main: FunctionComponent<{
         <EditSnippetModal
           snippet={editingSnippet}
           onSave={upsertSnippet}
-          onClose={() => setEditingSnippetId(null)}
+          onClose={handleCloseModal}
         />
       )}
+      <BackgroundPicture />
     </div>
   );
 };
+
+const logger = new Logger("Main");
 
 interface RunState {
   runAt: Date;

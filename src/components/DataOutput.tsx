@@ -5,6 +5,7 @@ import { Button } from "./Button";
 import { MonacoWrapper } from "./MonacoWrapper";
 import { Box } from "./Box";
 import { toRichJsonString } from "../helpers/JsonHelpers";
+import { CopyTextButton } from "./CopyTextButton";
 
 export const DataOutput: FunctionComponent<{ data: unknown }> = memo(
   ({ data }) => {
@@ -28,10 +29,8 @@ export const DataOutput: FunctionComponent<{ data: unknown }> = memo(
 
     return (
       <div className="data-output">
-        <Box justifyContent="flex-end">
-          <Button onClick={() => navigator.clipboard.writeText(stringData)}>
-            Copy Text
-          </Button>
+        <Box justifyContent="flex-end" mb={0.75} mr={0.75}>
+          <CopyTextButton textToCopy={stringData} />
         </Box>
         <div className="data-output__content" ref={contentRef}>
           <MonacoWrapper

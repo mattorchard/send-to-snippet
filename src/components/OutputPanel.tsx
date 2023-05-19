@@ -1,5 +1,5 @@
 import { h, FunctionComponent, Fragment } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { useSandbox } from "../hooks/useSandbox";
 import { ValueOf } from "../types/UtilityTypes";
 import { Accordion } from "./Accordion";
@@ -8,7 +8,9 @@ import { Button } from "./Button";
 import { DataOutput } from "./DataOutput";
 import { ErrorAlert } from "./ErrorAlert";
 import { MainPanel } from "./MainPanel";
+import { Overlapper } from "./Overlapper";
 import { RelativeDateTime } from "./RelativeDateTime";
+import { Spinner } from "./Spinner";
 
 interface OutputPanelProps {
   script: string;
@@ -30,6 +32,7 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
   runAt,
   onRerun,
 }) => {
+  const panelRef = useRef<HTMLElement>(undefined!);
   const {
     renderSandbox,
     isLoading,
@@ -48,6 +51,10 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
   );
 
   useEffect(() => {
+    if (isLoading) panelRef.current.scrollIntoView({ behavior: "auto" });
+  });
+
+  useEffect(() => {
     if (isLoading) return;
     if (result) {
       setExpandedSectionId(sectionIds.RESULT);
@@ -59,20 +66,27 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
   return (
     <MainPanel
       title="Output"
-      action={<Button onClick={onRerun}>Rerun</Button>}
+      ref={panelRef}
+      action={
+        <Button onClick={onRerun} disabled={isLoading}>
+          <Overlapper
+            sections={[
+              { content: "Rerun", isActive: !isLoading },
+              { content: <Spinner />, isActive: isLoading },
+            ]}
+          />
+        </Button>
+      }
       content={
         <div className="output-panel__content-container">
           <div className="output-panel__alert-container scrollable">
-            {error && (
-              <Box mb={1}>
-                <ErrorAlert error={error} />
-              </Box>
-            )}
+            {error && <ErrorAlert error={error} />}
           </div>
           <Accordion
             headingLevel={3}
             expandedId={expandedSectionId}
             onChange={setExpandedSectionId}
+            sectionClassName="tile"
             sections={[
               {
                 id: sectionIds.RESULT,
@@ -94,7 +108,7 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
       }
       footer={
         isLoading ? (
-          "Loading..."
+          <Spinner />
         ) : (
           <span>
             Last run <RelativeDateTime date={runAt} /> ago
@@ -108,7 +122,17 @@ export const OutputPanel: FunctionComponent<OutputPanelProps> = ({
 export const EmptyOutputPanel = () => (
   <MainPanel
     title="Output"
-    content={<p>Run a snippet to view the output and iframe here.</p>}
+    content={
+      <Box
+        className="tile non-ideal-state"
+        p={0.75}
+        flexDirection="column"
+        gap={0.75}
+      >
+        <h3 className="h3">View the output</h3>
+        <p>Results will appear here after you run a snippet.</p>
+      </Box>
+    }
     footer={null}
   />
 );

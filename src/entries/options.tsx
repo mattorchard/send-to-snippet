@@ -2,6 +2,6 @@ import { render, h } from "preact";
 import "preact/devtools";
 import { Main } from "../components/Main";
 
-const Options = () => <Main title="S2S — Options" shouldMockData />;
+const Options = () => <Main title="Send 2 Snippet" shouldMockData />;
 
 render(<Options />, document.getElementById("root")!);

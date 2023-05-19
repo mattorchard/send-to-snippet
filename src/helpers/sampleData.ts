@@ -24,26 +24,27 @@ Integer non leo molestie, ornare dui quis, cursus nulla.`;
 
 export const sampleSnippets: Upsertable<Snippet>[] = [
   {
-    id: "sample-document",
-    title: "Sample Document Snippet",
+    title: "Sample Iframe Output",
     script: `// You can put visuals into the body of the the iframe that your code is run within.
 document.body.innerText = input.toLowerCase();`,
   },
   {
-    id: "sample-text",
-    title: "Sample Text Snippet",
-    script: `// You can return text or serialized data and it will appear in the text output. 
-return input.toUpperCase();`,
+    title: "Sample JSON Output",
+    script: `// You can return text or serializable data and it will appear in the text output. 
+const letterCounts = {};
+for (const letter of input) {
+  letterCounts[letter] = (letterCounts[letter] ?? 0) + 1;
+}
+return letterCounts;`,
   },
   {
-    id: "sample-effect",
-    title: "Sample Effect Snippet",
+    title: "Sample Effect",
     script: `// You can even write a script with no output or visuals, if you just want to run an effect.
 window.alert(input);`,
   },
 ];
 
 export const sampleSnippetSkeleton: Upsertable<Snippet> = {
-  title: "New Snippet",
+  title: "",
   script: `return input.toUpperCase();`,
 };

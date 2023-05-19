@@ -10,6 +10,7 @@ interface AccordionProps<IdType> {
   sections: AccordionSectionDetails<IdType>[];
   expandedId: IdType | null;
   onChange: (expandedId: IdType | null) => void;
+  sectionClassName?: string;
 }
 
 interface AccordionSectionDetails<IdType> {
@@ -25,6 +26,7 @@ export const Accordion: <IdType>(
   expandedId,
   headingLevel,
   onChange,
+  sectionClassName = "",
 }) => (
   <div className="accordion">
     {sections.map((section) => {
@@ -32,9 +34,9 @@ export const Accordion: <IdType>(
       return (
         <section
           key={section.id}
-          className={bem("accordion__section", {
+          className={`${bem("accordion__section", {
             "is-expanded": isExpanded,
-          })}
+          })} ${sectionClassName}`}
         >
           <Heading level={headingLevel} className="accordion__section__heading">
             <button

@@ -72,6 +72,20 @@ const ChromeWrapper = {
   createTab: async (url: string) => {
     chrome.tabs.create({ url });
   },
+
+  setStorage: (data: Record<string, unknown>) => chrome.storage.local.set(data),
+
+  getStorage: (
+    keys: string[],
+    callback: (data: Record<string, unknown>) => void
+  ) => chrome.storage.local.get(keys, callback),
+
+  addStorageListener: (
+    listener: (changes: { [key: string]: chrome.storage.StorageChange }) => void
+  ) => chrome.storage.local.onChanged.addListener(listener),
+
+  addOnActionClickListener: (listener: () => void) =>
+    chrome.action.onClicked.addListener(listener),
 } as const;
 
 // Chrome implementation is primary, so drives mocks and other implementations
@@ -108,6 +122,14 @@ const LocalhostExtension: Extension = {
   createTab: async (url) => {
     self.open(url, "_blank");
   },
+
+  getStorage: (key, callback) => callback({}),
+
+  setStorage: async () => {},
+
+  addStorageListener: () => {},
+
+  addOnActionClickListener: () => {},
 };
 
 const shouldMock = self.location.host.startsWith("localhost");

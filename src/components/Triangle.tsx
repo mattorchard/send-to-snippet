@@ -14,16 +14,16 @@ export const Triangle: FunctionComponent<{
 
   return (
     <svg
-      viewBox="0 0 100 100"
+      viewBox="0 0 24 24"
+      focusable="false"
       className="triangle"
       style={{ "--triangle__angle": angle }}
+      aria-hidden="true"
     >
       <path
-        d="M0,0 L50,86.6, L100,0"
-        stroke="currentColor"
-        fill="none"
-        strokeWidth="10"
-      />
+        fill="currentColor"
+        d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+      ></path>
     </svg>
   );
 };

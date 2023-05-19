@@ -14,7 +14,7 @@ body {
   color: var(--color-text-light);
   user-select: none;
   line-height: 1;
-  font-family: sans-serif;
+  font-family: monospace;
 }
 button {
   background: none;
@@ -40,9 +40,8 @@ dialog::backdrop {
   backdrop-filter: blur(2px);
 }
 dialog {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin: auto;
+  background-color: transparent;
 }
 
 input {
