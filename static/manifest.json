@@ -6,8 +6,7 @@
   "permissions": [
     "storage",
     "unlimitedStorage",
-    "contextMenus",
-    "activeTab"
+    "contextMenus"
   ],
   "optional_permissions": [
     "scripting"
