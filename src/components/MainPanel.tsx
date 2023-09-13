@@ -16,16 +16,12 @@ interface MainPanelProps {
 export const MainPanel: FunctionComponent<MainPanelProps> = forwardRef(
   ({ title, action, content, footer }: MainPanelProps, ref) => (
     <section className="main__panel glass" ref={ref}>
-      <Box
-        as="header"
-        className="main__panel__header"
-        justifyContent="space-between"
-      >
+      <Box as="header" className="main__panel__header">
         <Heading level={2}>{title}</Heading>
         {action}
       </Box>
       <ScrollShadows className="main__panel__content">{content}</ScrollShadows>
       <footer className="main__panel__footer">{footer}</footer>
     </section>
-  )
+  ),
 );

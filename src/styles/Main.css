@@ -37,6 +37,10 @@ html {
 
 .main__panel__header {
   margin-bottom: 0.5rem;
+  gap: 0.5rem;
+}
+.main__panel__header > :first-child {
+  margin-right: auto;
 }
 .main__panel__content {
   max-height: 100%;
